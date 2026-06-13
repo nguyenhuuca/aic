@@ -3,6 +3,7 @@ package com.example.softwaremetrics.domain;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,7 +20,8 @@ public record MetricsExport(
         int packageCount,
         Summary summary,
         Map<String, PackageMetrics> packages,
-        GateResult gate) {
+        GateResult gate,
+        List<List<String>> cycles) {
 
     /** Aggregate counts derived from the per-package metrics. */
     public record Summary(int wellDesigned, int needsAttention, double averageDistance) {
@@ -27,7 +29,12 @@ public record MetricsExport(
 
     /** Returns a copy of this envelope with the gate evaluation attached. */
     public MetricsExport withGate(GateResult gate) {
-        return new MetricsExport(generatedAt, projectPath, toolVersion, packageCount, summary, packages, gate);
+        return new MetricsExport(generatedAt, projectPath, toolVersion, packageCount, summary, packages, gate, cycles);
+    }
+
+    /** Returns a copy of this envelope with the detected circular-dependency groups attached. */
+    public MetricsExport withCycles(List<List<String>> cycles) {
+        return new MetricsExport(generatedAt, projectPath, toolVersion, packageCount, summary, packages, gate, cycles);
     }
 
     /**
@@ -58,6 +65,7 @@ public record MetricsExport(
                 packageCount,
                 new Summary(wellDesigned, needsAttention, averageDistance),
                 metrics,
+                null,
                 null);
     }
 }

@@ -17,7 +17,7 @@ public class ThresholdEvaluator {
     static final double ZONE_PAIN_MAX = 0.3;        // I <= 0.3 && A <= 0.3
     static final double ZONE_USELESSNESS_MIN = 0.7; // I >= 0.7 && A >= 0.7
 
-    public GateResult evaluate(Map<String, PackageMetrics> metrics, GateConfig cfg) {
+    public GateResult evaluate(Map<String, PackageMetrics> metrics, List<List<String>> cycles, GateConfig cfg) {
         List<GateResult.Violation> violations = new ArrayList<>();
 
         if (cfg.maxPackageDistanceEnabled()) {
@@ -49,6 +49,14 @@ public class ThresholdEvaluator {
                 violations.add(new GateResult.Violation(
                         "maxAverageDistance", null, avg, cfg.maxAverageDistance(),
                         String.format("Average distance %.2f exceeds max %.2f", avg, cfg.maxAverageDistance())));
+            }
+        }
+
+        if (cfg.noCyclesEnabled() && cycles != null) {
+            for (List<String> cycle : cycles) {
+                violations.add(new GateResult.Violation(
+                        "circularDependency", null, cycle.size(), 0.0,
+                        "Circular dependency between packages: " + String.join(" -> ", cycle)));
             }
         }
 

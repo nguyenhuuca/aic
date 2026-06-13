@@ -1,6 +1,7 @@
 package com.example.softwaremetrics.infrastructure;
 
 import com.example.softwaremetrics.application.SpringBootPackageScanner;
+import com.example.softwaremetrics.domain.CycleDetector;
 import com.example.softwaremetrics.domain.MetricsExport;
 import com.example.softwaremetrics.domain.PackageMetrics;
 
@@ -14,18 +15,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
 public class PackageScannerController {
 
     private final SpringBootPackageScanner springBootPackageScanner;
+    private final CycleDetector cycleDetector;
 
     @Value("${app.tool-version:1.0-SNAPSHOT}")
     private String toolVersion;
 
-    public PackageScannerController(SpringBootPackageScanner springBootPackageScanner) {
+    public PackageScannerController(SpringBootPackageScanner springBootPackageScanner, CycleDetector cycleDetector) {
         this.springBootPackageScanner = springBootPackageScanner;
+        this.cycleDetector = cycleDetector;
     }
 
     @GetMapping("/")
@@ -39,6 +43,7 @@ public class PackageScannerController {
         try {
             Map<String, PackageMetrics> metrics = springBootPackageScanner.scanProject(path);
             model.addAttribute("metrics", metrics);
+            model.addAttribute("cycles", cycleDetector.findCycles(metrics));
             return "graph :: graph";
         } catch (IllegalArgumentException | IllegalStateException e) {
             model.addAttribute("error", "Error scanning project: " + e.getMessage());
@@ -55,7 +60,8 @@ public class PackageScannerController {
     public ResponseEntity<?> exportMetrics(@RequestParam String path) {
         try {
             Map<String, PackageMetrics> metrics = springBootPackageScanner.scanProject(path);
-            return ResponseEntity.ok(MetricsExport.from(path, toolVersion, metrics));
+            List<List<String>> cycles = cycleDetector.findCycles(metrics);
+            return ResponseEntity.ok(MetricsExport.from(path, toolVersion, metrics).withCycles(cycles));
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }

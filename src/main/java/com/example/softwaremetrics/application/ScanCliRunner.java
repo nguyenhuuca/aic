@@ -1,5 +1,6 @@
 package com.example.softwaremetrics.application;
 
+import com.example.softwaremetrics.domain.CycleDetector;
 import com.example.softwaremetrics.domain.GateConfig;
 import com.example.softwaremetrics.domain.GateProperties;
 import com.example.softwaremetrics.domain.GateResult;
@@ -36,6 +37,7 @@ public class ScanCliRunner implements ApplicationRunner {
 
     private final SpringBootPackageScanner scanner;
     private final ThresholdEvaluator thresholdEvaluator;
+    private final CycleDetector cycleDetector;
     private final GateProperties gateProperties;
     private final ConfigurableApplicationContext context;
     private final ObjectMapper objectMapper;
@@ -44,10 +46,11 @@ public class ScanCliRunner implements ApplicationRunner {
     private String toolVersion;
 
     public ScanCliRunner(SpringBootPackageScanner scanner, ThresholdEvaluator thresholdEvaluator,
-                         GateProperties gateProperties, ConfigurableApplicationContext context,
-                         ObjectMapper objectMapper) {
+                         CycleDetector cycleDetector, GateProperties gateProperties,
+                         ConfigurableApplicationContext context, ObjectMapper objectMapper) {
         this.scanner = scanner;
         this.thresholdEvaluator = thresholdEvaluator;
+        this.cycleDetector = cycleDetector;
         this.gateProperties = gateProperties;
         this.context = context;
         this.objectMapper = objectMapper;
@@ -72,9 +75,12 @@ public class ScanCliRunner implements ApplicationRunner {
 
         try {
             Map<String, PackageMetrics> metrics = scanner.scanProject(path);
+            List<List<String>> cycles = cycleDetector.findCycles(metrics);
             GateConfig gateConfig = resolveGateConfig(args);
-            GateResult gateResult = thresholdEvaluator.evaluate(metrics, gateConfig);
-            MetricsExport export = MetricsExport.from(path, toolVersion, metrics).withGate(gateResult);
+            GateResult gateResult = thresholdEvaluator.evaluate(metrics, cycles, gateConfig);
+            MetricsExport export = MetricsExport.from(path, toolVersion, metrics)
+                    .withGate(gateResult)
+                    .withCycles(cycles);
 
             writeJson(export, firstValue(args, "output"));
             printSummary(gateResult);
@@ -95,7 +101,8 @@ public class ScanCliRunner implements ApplicationRunner {
             return new GateConfig(
                     true, threshold,
                     base.forbiddenZonesEnabled(),
-                    base.maxAverageDistanceEnabled(), base.maxAverageDistance());
+                    base.maxAverageDistanceEnabled(), base.maxAverageDistance(),
+                    base.noCyclesEnabled());
         }
         return base;
     }

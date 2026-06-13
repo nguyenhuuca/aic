@@ -2,6 +2,15 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
     <div th:fragment="graph">
+        <div th:if="${cycles != null and !cycles.empty}" class="cycle-banner">
+            <div class="cycle-banner-title">
+                <i class="fas fa-triangle-exclamation"></i>
+                <span th:text="|Circular dependencies detected (${cycles.size()})|">Circular dependencies detected</span>
+            </div>
+            <ul class="cycle-list">
+                <li th:each="cycle : ${cycles}" th:text="${#strings.listJoin(cycle, ' → ')}">a → b → a</li>
+            </ul>
+        </div>
         <div class="container">
             <div class="chart-container">
                 <canvas id="metricsChart"></canvas>

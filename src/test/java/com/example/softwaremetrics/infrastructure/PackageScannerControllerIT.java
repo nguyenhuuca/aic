@@ -74,6 +74,7 @@ public class PackageScannerControllerIT {
                 .andExpect(jsonPath("$.projectPath", containsString(tempDir.toString())))
                 .andExpect(jsonPath("$.packageCount", greaterThanOrEqualTo(1)))
                 .andExpect(jsonPath("$.summary").exists())
+                .andExpect(jsonPath("$.cycles", org.hamcrest.Matchers.empty()))
                 .andExpect(jsonPath("$.packages", org.hamcrest.Matchers.hasKey("com.example.subpackage")));
     }
 

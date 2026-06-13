@@ -18,7 +18,7 @@ java -jar target/abstractness-instability-calculator-1.0-SNAPSHOT.jar
 
 The app serves on **port 8081** (set in `application.yaml`; the README's mention of 8080 is stale). A Nix flake (`nix develop`) is provided for systems with outdated Java/Maven.
 
-**Headless / CI mode:** starting the jar with `--scan=<path>` runs a one-shot scan with no web server (`WebApplicationType.NONE`), prints the JSON metrics envelope, evaluates the quality gates, and exits `0` (passed) / `1` (gate violated) / `2` (scan error). Driven by `application/ScanCliRunner` (an `ApplicationRunner` that is inert without `--scan`). Gates live under `instability-calculator.gate` (`GateProperties` → `GateConfig` → `ThresholdEvaluator`).
+**Headless / CI mode:** starting the jar with `--scan=<path>` runs a one-shot scan with no web server (`WebApplicationType.NONE`), prints the JSON metrics envelope, evaluates the quality gates, and exits `0` (passed) / `1` (gate violated) / `2` (scan error). Driven by `application/ScanCliRunner` (an `ApplicationRunner` that is inert without `--scan`). Gates live under `instability-calculator.gate` (`GateProperties` → `GateConfig` → `ThresholdEvaluator`): `max-package-distance`, `forbidden-zones`, `max-average-distance`, and `no-cycles`. `CycleDetector` (Tarjan SCC over the package dependency graph) finds circular dependencies; cycles appear in the JSON envelope (`cycles`) and as a banner in the web UI.
 
 ### Tests
 

@@ -15,6 +15,8 @@ instability-calculator:
     max-average-distance:   # fail if the average distance across packages exceeds threshold
       enabled: false
       threshold: 0.5
+    no-cycles:              # fail if any circular dependency between packages is detected
+      enabled: false
 
   native-packages:
     disabled: true

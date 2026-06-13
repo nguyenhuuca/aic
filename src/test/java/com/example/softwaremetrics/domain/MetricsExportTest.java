@@ -62,4 +62,16 @@ class MetricsExportTest {
         assertThat(withGate.packageCount()).isEqualTo(export.packageCount());
         assertThat(export.gate()).isNull(); // original unchanged
     }
+
+    @Test
+    void cyclesAreNullByDefaultAndAttachedByWithCycles() {
+        MetricsExport export = MetricsExport.from("/p", "1.0-TEST", Map.of());
+        assertThat(export.cycles()).isNull();
+
+        List<List<String>> cycles = List.of(List.of("a", "b"));
+        MetricsExport withCycles = export.withCycles(cycles);
+
+        assertThat(withCycles.cycles()).isSameAs(cycles);
+        assertThat(export.cycles()).isNull(); // original unchanged
+    }
 }

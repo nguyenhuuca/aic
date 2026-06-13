@@ -15,6 +15,7 @@ public class GateProperties {
     private ThresholdGate maxPackageDistance = new ThresholdGate(true, 0.7);
     private ToggleGate forbiddenZones = new ToggleGate(false);
     private ThresholdGate maxAverageDistance = new ThresholdGate(false, 0.5);
+    private ToggleGate noCycles = new ToggleGate(false);
 
     public ThresholdGate getMaxPackageDistance() {
         return maxPackageDistance;
@@ -40,11 +41,20 @@ public class GateProperties {
         this.maxAverageDistance = maxAverageDistance;
     }
 
+    public ToggleGate getNoCycles() {
+        return noCycles;
+    }
+
+    public void setNoCycles(ToggleGate noCycles) {
+        this.noCycles = noCycles;
+    }
+
     public GateConfig toConfig() {
         return new GateConfig(
                 maxPackageDistance.isEnabled(), maxPackageDistance.getThreshold(),
                 forbiddenZones.isEnabled(),
-                maxAverageDistance.isEnabled(), maxAverageDistance.getThreshold());
+                maxAverageDistance.isEnabled(), maxAverageDistance.getThreshold(),
+                noCycles.isEnabled());
     }
 
     public static class ToggleGate {

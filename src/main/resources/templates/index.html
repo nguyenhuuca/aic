@@ -241,6 +241,31 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
+        /* ---------- Circular dependency banner ---------- */
+        .cycle-banner {
+            background: rgba(248, 113, 113, 0.08);
+            border: 1px solid rgba(248, 113, 113, 0.4);
+            border-left: 4px solid var(--red);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+        .cycle-banner-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            color: var(--red);
+            margin-bottom: 8px;
+        }
+        .cycle-list {
+            margin: 0;
+            padding-left: 28px;
+            color: var(--text);
+            font-size: 14px;
+        }
+        .cycle-list li { padding: 2px 0; font-family: monospace; word-break: break-all; }
+
         /* ---------- Layout for graph fragment ---------- */
         .container {
             display: flex;

@@ -82,6 +82,10 @@ independent and can be enabled/disabled):
 | `max-package-distance` | any package's distance `D` exceeds `threshold` (default `0.7`) |
 | `forbidden-zones` | any package falls in the Zone of Pain or Zone of Uselessness |
 | `max-average-distance` | the average `D` across packages exceeds `threshold` |
+| `no-cycles` | any circular dependency between packages is detected |
+
+The JSON envelope also includes a `cycles` array (each entry is a group of packages that form a
+dependency cycle), and the web UI shows a warning banner listing them after a scan.
 
 `--fail-on-distance=<d>` enables and overrides the per-package distance threshold from the command line.
 
