@@ -4,277 +4,463 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abstractness and Instability Metrics Calculator</title>
+    <title>Abstractness &amp; Instability Metrics Calculator</title>
     <script src="https://unpkg.com/htmx.org@2.0.2"></script>
     <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
     <script>
         htmx.config.useTemplateFragments = true;
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
+        :root {
+            --bg-1: #0f172a;
+            --bg-2: #1e1b4b;
+            --accent: #6366f1;
+            --accent-2: #a855f7;
+            --accent-grad: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --card: rgba(255, 255, 255, 0.85);
+            --border: rgba(148, 163, 184, 0.25);
+            --green: #10b981;
+            --red: #ef4444;
+            --amber: #f59e0b;
+            --shadow: 0 10px 30px -10px rgba(2, 6, 23, 0.25);
+        }
+
+        * { box-sizing: border-box; }
+
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Inter', sans-serif;
             line-height: 1.6;
-            color: #333;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
+            color: var(--text);
+            margin: 0;
+            padding: 0 0 60px;
+            min-height: 100vh;
+            background:
+                radial-gradient(1200px 600px at 10% -10%, rgba(99, 102, 241, 0.35), transparent 60%),
+                radial-gradient(1000px 500px at 100% 0%, rgba(168, 85, 247, 0.30), transparent 55%),
+                linear-gradient(160deg, #f8fafc 0%, #eef2ff 100%);
+            background-attachment: fixed;
         }
-        h1 {
-            color: #2c3e50;
+
+        /* ---------- Hero ---------- */
+        .hero {
             text-align: center;
-            margin-bottom: 30px;
+            padding: 56px 20px 28px;
         }
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            max-width: 800px;
+        .hero .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(99, 102, 241, 0.12);
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            margin-bottom: 18px;
+        }
+        .hero h1 {
+            font-size: clamp(28px, 4vw, 44px);
+            font-weight: 800;
+            margin: 0 0 12px;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #1e293b 0%, #4338ca 60%, #a855f7 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p.subtitle {
+            max-width: 620px;
             margin: 0 auto;
+            color: var(--text-muted);
+            font-size: 16px;
         }
-        label {
+
+        /* ---------- Search card ---------- */
+        form.scan-form {
+            background: var(--card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 24px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            max-width: 760px;
+            margin: 28px auto 0;
+        }
+        form.scan-form label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+        }
+        .input-row {
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+        }
+        .input-wrap {
+            position: relative;
+            flex: 1;
+        }
+        .input-wrap i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 15px;
         }
         input[type="text"] {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
+            padding: 14px 16px 14px 44px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            background: #fff;
+            transition: border-color .2s, box-shadow .2s;
         }
-        button {
-            background-color: #3498db;
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+        button.scan-btn {
+            background: var(--accent-grad);
             color: white;
-            padding: 10px 15px;
+            padding: 0 26px;
             border: none;
-            border-radius: 4px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform .15s ease, box-shadow .2s ease, filter .2s;
+            box-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.6);
         }
-        button:hover {
-            background-color: #2980b9;
-        }
-        #result {
-            margin-top: 30px;
-        }
-        .container {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .chart-container {
-            flex: 0 0 60%;
-            aspect-ratio: 1 / 1;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 20px;
-        }
-        .package-details {
-            flex: 0 0 35%;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 20px;
-            overflow-y: auto;
-            max-height: calc(100vh - 40px);
-        }
-        canvas {
-            width: 100%;
-            height: 100%;
-        }
-        h3 {
-            margin-top: 0;
-            color: #333;
-        }
-        #packageDetailsContent {
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        .package-details p {
-            margin: 10px 0;
-        }
-        .package-details p strong {
-            display: inline-block;
-            width: 180px;
-        }
-        .package-details p i {
-            margin-right: 15px;
-            color: #3498db;
-        }
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 200px;
-            background-color: #555;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -100px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-        .dependencies-container {
-            margin-top: 20px;
-        }
-        .dependency-group {
-            margin-bottom: 10px;
-        }
-        .dependency-group h6 {
-            cursor: pointer;
-            margin-bottom: 5px;
-        }
-        .dependency-list {
-            list-style-type: none;
-            padding-left: 20px;
-        }
-        .show-more {
-            color: #007bff;
-            cursor: pointer;
-        }
-        #efferentSearch, #afferentSearch {
-            width: 100%;
-            padding: 5px;
-            margin-bottom: 10px;
-        }
+        button.scan-btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+        button.scan-btn:active { transform: translateY(0); }
 
-        /* New styles for tabs */
+        /* ---------- Summary stat cards ---------- */
+        #summaryStats {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            max-width: 1200px;
+            margin: 28px auto 0;
+            padding: 0 20px;
+        }
+        .stat-card {
+            background: var(--card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px 20px;
+            box-shadow: var(--shadow);
+        }
+        .stat-card .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .stat-card .stat-value {
+            font-size: 30px;
+            font-weight: 800;
+            margin-top: 6px;
+            letter-spacing: -0.02em;
+        }
+        .stat-card.green .stat-value { color: var(--green); }
+        .stat-card.red .stat-value { color: var(--red); }
+        .stat-card.accent .stat-value { color: var(--accent); }
+
+        /* ---------- Tabs ---------- */
         #tabContainer {
             display: none;
-            margin-top: 30px;
+            max-width: 1200px;
+            margin: 28px auto 0;
+            padding: 0 20px;
         }
         .tabs {
-            display: flex;
-            border-bottom: 1px solid #ddd;
+            display: inline-flex;
+            gap: 6px;
+            padding: 6px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            margin-bottom: 18px;
+            backdrop-filter: blur(8px);
         }
         .tab {
             padding: 10px 20px;
-            background-color: #f0f0f0;
-            border: 1px solid #ddd;
-            border-bottom: none;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.3s;
-            margin-right: 5px;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
-        }
-        .tab:hover {
-            background-color: #e0e0e0;
-        }
-        .tab.active {
-            background-color: #fff;
-            border-bottom: 1px solid #fff;
-            margin-bottom: -1px;
-        }
-        .tab-content {
-            display: none;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-top: none;
-            background-color: #fff;
-        }
-        .tab-content.active {
-            display: block;
-        }
-
-        #packageDependenciesContent {
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-            height: 100%;
-        }
-        .dropdown-container {
-            display: flex;
-            justify-content: flex-start;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-muted);
+            transition: all .2s ease;
+            display: inline-flex;
             align-items: center;
-            margin-bottom: 20px;
+            gap: 8px;
+            border: none;
+            background: transparent;
         }
-        .select-wrapper {
-            position: relative;
-            display: inline-block;
-            width: 300px;
-            margin-right: 20px;
+        .tab:hover { color: var(--text); background: rgba(99, 102, 241, 0.08); }
+        .tab.active {
+            background: var(--accent-grad);
+            color: #fff;
+            box-shadow: 0 6px 16px -6px rgba(99, 102, 241, 0.6);
         }
-        .select-wrapper select {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 10px 30px 10px 10px;
-            width: 100%;
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ---------- Layout for graph fragment ---------- */
+        .container {
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+        }
+        .chart-container {
+            flex: 0 0 58%;
+            aspect-ratio: 1 / 1;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 24px;
+        }
+        .package-details {
+            flex: 1;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 24px;
+            overflow-y: auto;
+            max-height: calc(100vh - 40px);
+        }
+        canvas { width: 100%; height: 100%; }
+
+        .package-details h3 {
+            margin-top: 0;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .package-details h4 {
             font-size: 16px;
+            font-weight: 700;
+            color: var(--accent);
+            word-break: break-all;
+            margin: 4px 0 16px;
+        }
+        #packageDetailsContent { font-size: 14px; }
+        .package-details p {
+            margin: 8px 0;
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: #f8fafc;
+        }
+        .package-details p strong {
+            display: inline-block;
+            width: 200px;
+            font-weight: 600;
+        }
+        .package-details p i { margin-right: 10px; color: var(--accent); }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 40px 10px;
+        }
+        .empty-state i { font-size: 34px; color: var(--accent); opacity: .5; margin-bottom: 12px; display: block; }
+
+        /* ---------- Tooltip ---------- */
+        .tooltip { position: relative; display: inline-block; }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 220px;
+            background: #0f172a;
+            color: #fff;
+            text-align: center;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 12px;
+            line-height: 1.5;
+            position: absolute;
+            z-index: 10;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -110px;
+            opacity: 0;
+            transition: opacity .25s;
+            box-shadow: var(--shadow);
+        }
+        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
+
+        /* ---------- Dependencies ---------- */
+        .dependencies-container { margin-top: 24px; }
+        .dependencies-container h5 {
+            font-size: 14px;
+            font-weight: 700;
+            margin: 18px 0 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--border);
+        }
+        .dependency-group { margin-bottom: 8px; }
+        .dependency-group h6 {
             cursor: pointer;
+            margin: 0;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            background: rgba(99, 102, 241, 0.08);
+            transition: background .2s;
         }
-        .select-wrapper select:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        .dependency-group h6:hover { background: rgba(99, 102, 241, 0.16); }
+        .dependency-list {
+            list-style: none;
+            padding-left: 14px;
+            margin: 6px 0;
+            font-size: 13px;
+            color: var(--text-muted);
         }
+        .dependency-list li { padding: 3px 0; word-break: break-all; }
+        .show-more { color: var(--accent); cursor: pointer; font-weight: 600; }
+        #efferentSearch, #afferentSearch {
+            width: 100%;
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+        }
+        #efferentSearch:focus, #afferentSearch:focus { outline: none; border-color: var(--accent); }
+
+        /* ---------- Dependency visualization tab ---------- */
+        #packageDependenciesContent { display: flex; flex-direction: column; }
+        .dropdown-container { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-bottom: 20px; }
+        .select-wrapper { position: relative; display: inline-block; width: 300px; max-width: 100%; }
+        .select-wrapper select {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 30px 12px 14px;
+            width: 100%;
+            font-size: 14px;
+            font-family: inherit;
+            cursor: pointer;
+            appearance: none;
+        }
+        .select-wrapper select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15); }
         .select-wrapper::after {
-            /*content: "\25BC";*/
+            content: "\f078";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            font-size: 11px;
             position: absolute;
             top: 50%;
-            right: 10px;
+            right: 14px;
             transform: translateY(-50%);
             pointer-events: none;
-            color: #333;
+            color: var(--text-muted);
         }
-        .select-wrapper select option {
-            background-color: #fff;
-            color: #333;
+        #dependencyVisualization {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 16px;
+            min-height: 400px;
+        }
+        #dependencyVisualization input[type="text"] {
+            max-width: 320px;
         }
 
+        /* ---------- Spinner ---------- */
         .spinner {
             display: none;
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
+            width: 46px;
+            height: 46px;
+            border: 4px solid rgba(99, 102, 241, 0.18);
+            border-top: 4px solid var(--accent);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+            animation: spin 0.9s linear infinite;
+            margin: 32px auto;
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @media (max-width: 860px) {
+            .container { flex-direction: column; }
+            .chart-container, .package-details { flex: 1 1 100%; }
         }
     </style>
 </head>
 <body>
-    <h1>Abstractness and Instability Metrics Calculator</h1>
-    <form hx-post="/scan" hx-target="#result" hx-indicator="#loadingSpinner" hx-on::after-request="showTabs()">
-        <label for="path">Project Path:</label>
-        <input type="text" id="path" name="path" required placeholder="Enter the project path...">
-        <button type="submit">Scan</button>
+    <header class="hero">
+        <span class="badge"><i class="fas fa-diagram-project"></i> Software Architecture Metrics</span>
+        <h1>Abstractness &amp; Instability Calculator</h1>
+        <p class="subtitle">
+            Analyze your Spring Boot project's package design. Visualize where each module sits
+            relative to the Main Sequence and spot the Zones of Pain and Uselessness.
+        </p>
+    </header>
+
+    <form class="scan-form" hx-post="/scan" hx-target="#result" hx-indicator="#loadingSpinner" hx-on::after-request="showTabs()">
+        <label for="path">Project Path</label>
+        <div class="input-row">
+            <div class="input-wrap">
+                <i class="fas fa-folder-open"></i>
+                <input type="text" id="path" name="path" required placeholder="e.g. /Users/me/projects/my-spring-app">
+            </div>
+            <button class="scan-btn" type="submit"><i class="fas fa-magnifying-glass-chart"></i> Scan</button>
+        </div>
     </form>
 
     <div id="loadingSpinner" class="spinner"></div>
 
+    <div id="summaryStats">
+        <div class="stat-card accent">
+            <div class="stat-label"><i class="fas fa-cubes"></i> Packages</div>
+            <div class="stat-value" id="statTotal">0</div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-label"><i class="fas fa-circle-check"></i> Well Designed</div>
+            <div class="stat-value" id="statGood">0</div>
+        </div>
+        <div class="stat-card red">
+            <div class="stat-label"><i class="fas fa-triangle-exclamation"></i> Needs Attention</div>
+            <div class="stat-value" id="statBad">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label"><i class="fas fa-ruler"></i> Avg. Distance</div>
+            <div class="stat-value" id="statAvgD">0.00</div>
+        </div>
+    </div>
+
     <div id="tabContainer">
         <div class="tabs">
-            <div class="tab active" onclick="openTab(event, 'metricsTab')">Metrics Chart</div>
-            <div class="tab" onclick="openTab(event, 'packageDependenciesTab')">Dependency Visualization</div>
+            <button class="tab active" onclick="openTab(event, 'metricsTab')"><i class="fas fa-chart-scatter"></i> Metrics Chart</button>
+            <button class="tab" onclick="openTab(event, 'packageDependenciesTab')"><i class="fas fa-share-nodes"></i> Dependency Visualization</button>
         </div>
 
         <div id="metricsTab" class="tab-content active">
@@ -320,7 +506,26 @@
         function showTabs() {
             document.getElementById('loadingSpinner').style.display = 'none';
             document.getElementById('tabContainer').style.display = 'block';
+            updateSummaryStats();
             populatePackageDropdown();
+        }
+
+        function updateSummaryStats() {
+            const metrics = window.metricsData || {};
+            const entries = Object.values(metrics);
+            const total = entries.length;
+            if (total === 0) return;
+            let good = 0, sumD = 0;
+            entries.forEach(m => {
+                const d = (m.distance != null) ? m.distance : 0;
+                sumD += d;
+                if (d <= 0.5) good++;
+            });
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statGood').textContent = good;
+            document.getElementById('statBad').textContent = total - good;
+            document.getElementById('statAvgD').textContent = (sumD / total).toFixed(2);
+            document.getElementById('summaryStats').style.display = 'grid';
         }
 
         document.body.addEventListener('htmx:beforeRequest', function(event) {
@@ -349,13 +554,13 @@
             const visualizationDiv = document.getElementById('dependencyVisualization');
 
             if (!packageName) {
-                visualizationDiv.innerHTML = '<p>Please select a package.</p>';
+                visualizationDiv.innerHTML = '<div class="empty-state"><i class="fas fa-share-nodes"></i>Please select a package.</div>';
                 return;
             }
 
             const packageData = window.metricsData[packageName];
             if (!packageData) {
-                visualizationDiv.innerHTML = '<p>No data available for the selected package.</p>';
+                visualizationDiv.innerHTML = '<div class="empty-state"><i class="fas fa-circle-info"></i>No data available for the selected package.</div>';
                 return;
             }
 
@@ -410,16 +615,18 @@
                 .selectAll("line")
                 .data(links)
                 .join("line")
-                .attr("stroke", "#999")
-                .attr("stroke-opacity", 0.6)
-                .attr("stroke-width", 1);
+                .attr("stroke", "#cbd5e1")
+                .attr("stroke-opacity", 0.7)
+                .attr("stroke-width", 1.5);
 
             const node = g.append("g")
                 .selectAll("circle")
                 .data(nodes)
                 .join("circle")
-                .attr("r", d => 10 - d.level)
-                .attr("fill", d => d.group === 1 ? "#ff7f0e" : d3.interpolateBlues(1 - d.level / 10))
+                .attr("r", d => Math.max(4, 10 - d.level))
+                .attr("fill", d => d.group === 1 ? "#a855f7" : d3.interpolatePurples(Math.max(0.25, 1 - d.level / 10)))
+                .attr("stroke", "#fff")
+                .attr("stroke-width", 1.5)
                 .call(drag(simulation));
 
             const label = g.append("g")
@@ -427,7 +634,9 @@
                 .data(nodes)
                 .join("text")
                 .text(d => d.id.split('.').pop())
-                .attr("font-size", d => `${12 - d.level}px`)
+                .attr("font-size", d => `${Math.max(9, 12 - d.level)}px`)
+                .attr("font-family", "Inter, sans-serif")
+                .attr("fill", "#334155")
                 .attr("dx", 12)
                 .attr("dy", ".35em");
 
@@ -457,7 +666,11 @@
                 .attr("type", "text")
                 .attr("placeholder", "Search classes...")
                 .style("width", "300px")
-                .style("margin-bottom", "10px")
+                .style("margin-bottom", "12px")
+                .style("padding", "8px 12px")
+                .style("border", "1px solid #e2e8f0")
+                .style("border-radius", "8px")
+                .style("font-family", "Inter, sans-serif")
                 .on("input", function() {
                     const term = this.value.toLowerCase();
                     highlightMatchingNodes(term);
@@ -465,14 +678,14 @@
 
             function highlightMatchingNodes(term) {
                 // Reset all nodes and links
-                node.attr("opacity", 0.3).attr("r", d => 10 - d.level);
+                node.attr("opacity", 0.3).attr("r", d => Math.max(4, 10 - d.level));
                 label.attr("opacity", 0.3);
-                link.attr("opacity", 0.1).attr("stroke-width", 1);
+                link.attr("opacity", 0.1).attr("stroke-width", 1.5);
 
                 if (term === "") {
                     node.attr("opacity", 1);
                     label.attr("opacity", 1);
-                    link.attr("opacity", 0.6);
+                    link.attr("opacity", 0.7);
                     return;
                 }
 
@@ -495,10 +708,10 @@
                 });
 
                 node.attr("opacity", d => highlightedNodes.has(d.id) ? 1 : 0.3)
-                    .attr("r", d => highlightedNodes.has(d.id) ? (15 - d.level) : (10 - d.level));
+                    .attr("r", d => highlightedNodes.has(d.id) ? (15 - d.level) : Math.max(4, 10 - d.level));
                 label.attr("opacity", d => highlightedNodes.has(d.id) ? 1 : 0.3);
                 link.attr("opacity", d => highlightedLinks.has(d) ? 1 : 0.1)
-                    .attr("stroke-width", d => highlightedLinks.has(d) ? 2 : 1);
+                    .attr("stroke-width", d => highlightedLinks.has(d) ? 2.5 : 1.5);
             }
 
             // Add legend
@@ -507,24 +720,30 @@
 
             legend.append("circle")
                 .attr("r", 6)
-                .attr("fill", "#ff7f0e")
+                .attr("fill", "#a855f7")
                 .attr("cx", 0)
                 .attr("cy", 0);
 
             legend.append("text")
                 .attr("x", 15)
                 .attr("y", 5)
+                .attr("font-family", "Inter, sans-serif")
+                .attr("font-size", "12px")
+                .attr("fill", "#334155")
                 .text("Selected Package");
 
             legend.append("circle")
                 .attr("r", 6)
-                .attr("fill", d3.interpolateBlues(0.5))
+                .attr("fill", d3.interpolatePurples(0.5))
                 .attr("cx", 0)
                 .attr("cy", 25);
 
             legend.append("text")
                 .attr("x", 15)
                 .attr("y", 30)
+                .attr("font-family", "Inter, sans-serif")
+                .attr("font-size", "12px")
+                .attr("fill", "#334155")
                 .text("Dependency");
 
             function drag(simulation) {

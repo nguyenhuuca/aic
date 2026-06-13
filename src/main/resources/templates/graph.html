@@ -7,9 +7,12 @@
                 <canvas id="metricsChart"></canvas>
             </div>
             <div class="package-details">
-                <h3>Package Details</h3>
+                <h3><i class="fas fa-circle-info"></i> Package Details</h3>
                 <div id="packageDetailsContent">
-                    <p>Click on a data point to view package details.</p>
+                    <div class="empty-state">
+                        <i class="fas fa-hand-pointer"></i>
+                        Click on a data point in the chart to view package details.
+                    </div>
                 </div>
             </div>
         </div>
@@ -73,8 +76,9 @@
                                 { x: 0, y: 1 },
                                 { x: 1, y: 0 }
                             ],
-                            borderColor: 'rgba(0, 0, 0, 0.5)',
+                            borderColor: 'rgba(99, 102, 241, 0.7)',
                             borderWidth: 2,
+                            borderDash: [6, 4],
                             pointRadius: 0,
                             type: 'line',
                             order: 1
@@ -89,9 +93,15 @@
                             })),
                             backgroundColor: (context) => {
                                 const distance = context.raw.distance;
-                                return distance <= 0.5 ? 'rgba(46, 204, 113, 0.6)' : 'rgba(231, 76, 60, 0.6)';
+                                return distance <= 0.5 ? 'rgba(16, 185, 129, 0.7)' : 'rgba(239, 68, 68, 0.7)';
                             },
+                            borderColor: (context) => {
+                                const distance = context.raw.distance;
+                                return distance <= 0.5 ? 'rgba(5, 150, 105, 1)' : 'rgba(220, 38, 38, 1)';
+                            },
+                            borderWidth: 1.5,
                             pointRadius: 8,
+                            pointHoverRadius: 11,
                             type: 'scatter',
                             order: 2
                         }
@@ -247,8 +257,8 @@
                         drawSafeZone(chart, 0.2, 'rgba(46, 204, 113, 0.1)'); // vùng |D| <= 0.2
                         drawWarningZonePartial(chart, 0.2, 0.6, 'rgba(243, 156, 18, 0.15)');
                         // Labels
-                        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-                        ctx.font = '14px Roboto';
+                        ctx.fillStyle = 'rgba(51, 65, 85, 0.65)';
+                        ctx.font = '600 13px Inter';
                         ctx.textAlign = 'center';
                         ctx.fillText('Zone of Pain', xAxis.getPixelForValue(0.15), yAxis.getPixelForValue(0.15));
                         ctx.fillText('Zone of Uselessness', xAxis.getPixelForValue(0.85), yAxis.getPixelForValue(0.85));
@@ -275,7 +285,7 @@
                                     display: true,
                                     text: 'Instability',
                                     font: {
-                                        family: 'Roboto',
+                                        family: 'Inter',
                                         size: 14,
                                         weight: 'bold'
                                     }
@@ -290,7 +300,7 @@
                                     display: true,
                                     text: 'Abstractness',
                                     font: {
-                                        family: 'Roboto',
+                                        family: 'Inter',
                                         size: 14,
                                         weight: 'bold'
                                     }
@@ -314,7 +324,7 @@
                             legend: {
                                 labels: {
                                     font: {
-                                        family: 'Roboto',
+                                        family: 'Inter',
                                         size: 12
                                     },
                                     filter: (legendItem) => legendItem.text !== 'Main Sequence'
