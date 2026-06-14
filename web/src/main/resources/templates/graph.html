@@ -11,6 +11,22 @@
                 <li th:each="cycle : ${cycles}" th:text="${#strings.listJoin(cycle, ' → ')}">a → b → a</li>
             </ul>
         </div>
+        <div th:if="${architecture != null and !architecture.compliant()}" class="cycle-banner">
+            <div class="cycle-banner-title">
+                <i class="fas fa-triangle-exclamation"></i>
+                <span th:text="|Architecture '${architecture.specName()}' — ${architecture.violations().size()} violation(s)|">Architecture violations</span>
+            </div>
+            <ul class="cycle-list">
+                <li th:each="v : ${architecture.violations()}">
+                    <span class="vtype" th:text="${v.type()}">type</span>
+                    <span th:text="${v.message()}">message</span>
+                </li>
+            </ul>
+        </div>
+        <div th:if="${architecture != null and architecture.compliant()}" class="arch-pass">
+            <i class="fas fa-circle-check"></i>
+            <span th:text="|Architecture '${architecture.specName()}' — all rules passed|">Architecture passed</span>
+        </div>
         <div class="container">
             <div class="chart-container">
                 <canvas id="metricsChart"></canvas>

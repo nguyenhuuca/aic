@@ -8,6 +8,7 @@ import com.example.softwaremetrics.domain.JavaClassAnalyzer;
 import com.example.softwaremetrics.domain.PackageLocator;
 import com.example.softwaremetrics.domain.PackageMetricsCalculator;
 import com.example.softwaremetrics.domain.ProjectPathTraverser;
+import com.example.softwaremetrics.domain.arch.ArchChecker;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -55,5 +56,10 @@ public class AnalysisConfig {
     @Bean
     public CycleDetector cycleDetector() {
         return new CycleDetector();
+    }
+
+    @Bean
+    public ArchChecker archChecker() {
+        return new ArchChecker();
     }
 }

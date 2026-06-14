@@ -57,6 +57,22 @@ public class PackageScannerControllerIT {
     }
 
     @Test
+    public void testScanWithArchitecture() throws Exception {
+        mockMvc.perform(post("/scan").param("path", tempDir.toString()).param("arch", "layered"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("graph :: graph"))
+                .andExpect(model().attributeExists("architecture"));
+    }
+
+    @Test
+    public void testExportMetricsWithArchitecture() throws Exception {
+        mockMvc.perform(get("/api/metrics").param("path", tempDir.toString()).param("arch", "layered"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.architecture").exists())
+                .andExpect(jsonPath("$.architecture.specName", notNullValue()));
+    }
+
+    @Test
     public void testScanError() throws Exception {
         mockMvc.perform(post("/scan").param("path", "/non/existent/path"))
                 .andExpect(status().isOk())
