@@ -28,10 +28,16 @@ Every section and field is optional — anything omitted keeps its default.
 
 ```yaml
 gates:
-  max-package-distance: { enabled: true,  threshold: 0.7 }
-  forbidden-zones:      { enabled: false }
-  max-average-distance: { enabled: false, threshold: 0.5 }
-  no-cycles:            { enabled: true }
+  max-package-distance:
+    enabled: true
+    threshold: 0.7
+  forbidden-zones:
+    enabled: false
+  max-average-distance:
+    enabled: false
+    threshold: 0.5
+  no-cycles:
+    enabled: true
 
 architecture:
   enabled: true
@@ -40,12 +46,15 @@ architecture:
   # spec:
   #   name: Custom
   #   components:
-  #     - { name: Web,     matches: ['.*\.web\..*'] }
-  #     - { name: Service, matches: ['.*\.service\..*'] }
+  #     - name: Web
+  #       matches: ['.*\.web\..*']
+  #     - name: Service
+  #       matches: ['.*\.service\..*']
   #   access:
   #     Web: [Service]
   #     Service: []
-  #   options: { forbidCycles: true }
+  #   options:
+  #     forbidCycles: true
 ```
 
 - **`gates`** — see [CLI & CI Gates](cli-and-ci.md) for what each gate means.

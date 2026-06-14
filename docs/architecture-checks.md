@@ -43,7 +43,8 @@ access:                       # allow-list: a component may depend ONLY on those
   Repository: [Domain]
   Domain:     []
 forbidden:                    # explicit deny edges (independent of access)
-  - { from: Domain, to: Web }
+  - from: Domain
+    to: Web
 naming:                       # required class simple-name regex per component
   Repository: '.*Repository$'
 options:
