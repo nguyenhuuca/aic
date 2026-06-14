@@ -130,3 +130,5 @@ fabric.properties
 .idea
 
 .vscode
+# MkDocs build output
+site/

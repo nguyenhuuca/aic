@@ -2,6 +2,8 @@
 
 This application calculates abstractness and instability metrics for Java, Spring Boot projects, helping developers analyze the structure and dependencies of their codebase. It ships both an **interactive web UI** and a **headless CLI** that can gate a build in CI when package design regresses.
 
+📖 **Full documentation:** <https://nguyenhuuca.github.io/abstractness-instability-calculator/>
+
 It follows the principles of Spring Modulith by analyzing the [application module packages](https://docs.spring.io/spring-modulith/reference/fundamentals.html#modules.simple). These are direct sub-packages of the _main_ package that contains the `@SpringBootApplication` annotated class. Ideally, these packages are expected to be functional layers rather than technical layers (controller, services, repositories etc.).
 
 A [Nix Flake](#nix-flake) is provided to help build on systems with outdated java and maven installations.
