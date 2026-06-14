@@ -1,15 +1,17 @@
 ---
-description: Build and run the calculator, then scan this repo itself for a live demo
+description: Build and run the web UI for a live demo
 ---
 
-Run a self-contained demo of the metrics calculator — useful for presentations.
+Run the metrics calculator web UI — useful for presentations.
 
 Steps:
-1. Build this project so its own bytecode exists: `mvn -q clean package -DskipTests`.
-2. Start the app in the background on port 8081 (its default). Wait until `http://localhost:8081/` returns HTTP 200.
-3. Scan this repo against itself: `curl -s -X POST "http://localhost:8081/scan" --data-urlencode "path=$(pwd)"` (use the absolute repo root). This works because step 1 populated `target/classes`.
-4. Confirm the scan returned the `com.example.softwaremetrics.*` module packages and report a one-line summary.
-5. Tell the user to open **http://localhost:8081** in a browser to walk through the dark-theme UI: the metrics scatter chart (Main Sequence, Safe / Warning / Pain / Uselessness zones) and the dependency visualization tab.
-6. Leave the app running so they can present, and remind them how to stop it (e.g. stop the `java` process) when finished.
+1. Build the project: `mvn -q clean package -DskipTests` (produces `web/target/aic-web.jar` and `core/target/aic-cli.jar`).
+2. Start the web app in the background on port 8081: `java -jar web/target/aic-web.jar`. Wait until `http://localhost:8081/` returns HTTP 200.
+3. Tell the user to open **http://localhost:8081** and enter the path to a **compiled** Spring Boot project (one with `target/classes` populated) — e.g. another project on disk. The tool reads `.class` bytecode, so the target must be built first.
+4. Point out the dark-theme UI: the metrics scatter chart (Main Sequence, Safe / Warning / Pain / Uselessness zones), the dependency visualization tab, the circular-dependency banner, and the **Export JSON** button.
+5. For a non-interactive demo, also show the lean CLI: `java -jar core/target/aic-cli.jar --scan="<compiled-project>" --fail-on-distance=0.7` — prints the JSON envelope and exits 0/1/2.
+6. Leave the app running so they can present; remind them how to stop it (stop the `java` process) when finished.
+
+Note: this repo is now multi-module, so scanning the repo root itself yields no packages (no `src/main/java` at the root) — point the scan at a normal single-module project instead.
 
 Do not stop the app automatically — the user needs it live for the demo.

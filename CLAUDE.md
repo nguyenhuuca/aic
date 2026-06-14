@@ -8,17 +8,21 @@ A Spring Boot web app that computes Robert Martin's package metrics — Abstract
 
 ## Build & run
 
-Requires JDK 22 and Maven 3.6+.
+Requires JDK 22 and Maven 3.6+. This is a **multi-module** Maven build (`core` + `web`):
 
 ```bash
-mvn clean package              # build + run tests, produces the runnable jar
+mvn clean package              # reactor: build + test both modules
 mvn clean package -DskipTests  # build only
-java -jar target/abstractness-instability-calculator-1.0-SNAPSHOT.jar
+java -jar web/target/aic-web.jar          # web UI on port 8081
+java -jar core/target/aic-cli.jar --scan=<path>   # headless CLI / CI
 ```
 
-The app serves on **port 8081** (set in `application.yaml`; the README's mention of 8080 is stale). A Nix flake (`nix develop`) is provided for systems with outdated Java/Maven.
+- **`core`** (`abstractness-instability-calculator-core`) — Spring-free analysis engine + CLI. Produces a lean shaded jar `core/target/aic-cli.jar` (~2.5 MB). Deps: ASM, jackson-databind, slf4j.
+- **`web`** (`abstractness-instability-calculator-web`) — Spring Boot UI depending on `core`. Fat jar `web/target/aic-web.jar`.
 
-**Headless / CI mode:** starting the jar with `--scan=<path>` runs a one-shot scan with no web server (`WebApplicationType.NONE`), prints the JSON metrics envelope, evaluates the quality gates, and exits `0` (passed) / `1` (gate violated) / `2` (scan error). Driven by `application/ScanCliRunner` (an `ApplicationRunner` that is inert without `--scan`). Gates live under `instability-calculator.gate` (`GateProperties` → `GateConfig` → `ThresholdEvaluator`): `max-package-distance`, `forbidden-zones`, `max-average-distance`, and `no-cycles`. `CycleDetector` (Tarjan SCC over the package dependency graph) finds circular dependencies; cycles appear in the JSON envelope (`cycles`) and as a banner in the web UI.
+The web app serves on **port 8081** (set in `web/.../application.yaml`; README's 8080 is stale). A Nix flake (`nix develop`) is provided for outdated Java/Maven.
+
+**Headless / CI mode:** `core/target/aic-cli.jar --scan=<path>` runs a one-shot scan with **no Spring and no web server** (entry point `cli.CliMain`, which wires the core POJOs by hand), prints the JSON metrics envelope, evaluates the quality gates, and exits `0` (passed) / `1` (gate violated) / `2` (scan error). The CLI's gate config defaults in code (`config/Defaults`) and is overridden by flags (`--fail-on-distance`, `--no-cycles`); gate logic is `GateConfig` → `ThresholdEvaluator`. `CycleDetector` (Tarjan SCC over the package dependency graph) finds circular dependencies; cycles appear in the JSON envelope (`cycles`) and as a banner in the web UI.
 
 ### Tests
 
@@ -32,9 +36,9 @@ mvn test -Dtest=JavaClassAnalyzerTest#methodName           # single method
 
 ## Architecture
 
-The flow is `Controller → SpringBootPackageScanner → PackageLocator + PackageMetricsCalculator → JavaClassAnalyzer`, organized in three layers under `com.example.softwaremetrics`:
+The flow is `Controller → SpringBootPackageScanner → PackageLocator + PackageMetricsCalculator → JavaClassAnalyzer`, organized in three layers under `com.example.softwaremetrics`. **`domain` and `application` live in the `core` module** (plain POJOs, no Spring); **`infrastructure`, templates, and the Spring wiring live in `web`**. The `web` module's `config/AnalysisConfig` exposes the core POJOs as `@Bean`s and binds `application.yaml` onto them via `@Bean @ConfigurationProperties` (so core stays Spring-free while the web app stays YAML-configurable).
 
-- **infrastructure** — `PackageScannerController`: `GET /` renders `index`, `POST /scan?path=...` returns Thymeleaf fragments `graph :: graph` (success) or `graph :: error` (on `IllegalArgumentException`/`IllegalStateException`). Templates live in `src/main/resources/templates/`.
+- **infrastructure** (web) — `PackageScannerController`: `GET /` renders `index`, `POST /scan?path=...` returns Thymeleaf fragments `graph :: graph` (success) or `graph :: error` (on `IllegalArgumentException`/`IllegalStateException`). Templates live in `web/src/main/resources/templates/`.
 - **application** — `SpringBootPackageScanner`: orchestrates a scan. Locates the main package, finds module packages, delegates metric calculation. Throws `IllegalArgumentException` when no `@SpringBootApplication` or no sub-packages are found.
 - **domain** — the analysis core:
   - `PackageLocator` — finds the main package (file containing `@SpringBootApplication`) and the module packages (sub-packages exactly one level below it).
@@ -58,7 +62,7 @@ Follow these when adding features or making changes so contributions stay consis
 - **Dependency injection via constructors**, not field `@Autowired` (the field injection in `JavaClassAnalyzer` is legacy — don't copy it). Register components with `@Component`.
 - **Add a test with every behavioural change.** Domain logic gets a focused unit test (see `PackageMetricsCalculatorTest`, `JavaClassAnalyzerTest`); endpoint/flow changes extend `PackageScannerControllerIT` (MockMvc + `@TempDir` synthetic project). Run `mvn test` before declaring done.
 - **Metrics changes must preserve the formulas** unless the change is explicitly about them: `I = Ce/(Ce+Ca)` (0 when both are 0), `A = abstract/total` (0 when total is 0), `D = |A + I − 1|`. If you touch counting, update both the calculator and its test.
-- **UI changes** live in `src/main/resources/templates/` (`index.html` = shell/styles, `graph.html` = chart + details fragment). Keep the dark theme palette (CSS variables in `index.html`) and the existing element IDs the htmx/Chart.js/D3 scripts depend on (`#result`, `#tabContainer`, `#packageSelect`, `metricsChart`, etc.).
+- **UI changes** live in `web/src/main/resources/templates/` (`index.html` = shell/styles, `graph.html` = chart + details fragment). Keep the dark theme palette (CSS variables in `index.html`) and the existing element IDs the htmx/Chart.js/D3 scripts depend on (`#result`, `#tabContainer`, `#packageSelect`, `metricsChart`, etc.).
 - **Don't break the bytecode contract.** Anything that reads the target project assumes compiled `.class` files — never switch to source parsing for metrics. New exclusion entries go in `application.yaml` (mind the inverted `disabled` flag, above).
 - **Verify end-to-end** for non-trivial changes with `/demo` (scan this repo) or `/analyze <path>` (scan an external project) before committing.
 - **Branch & PR**: branch off `main`, keep commits scoped, and end commit messages with the `Co-Authored-By` trailer. CI (`.github/workflows/maven.yml`) runs `mvn -B package` on JDK 22 — make sure it passes locally.

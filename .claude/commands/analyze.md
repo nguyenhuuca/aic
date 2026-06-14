@@ -12,16 +12,16 @@ Steps:
 2. Compile the target so its bytecode exists:
    - Maven (`pom.xml`): `mvn -q -f "<path>/pom.xml" clean compile`
    - Gradle (`build.gradle`/`.kts`): `gradle -p "<path>" classes` (or the wrapper)
-3. Build this calculator if needed: `mvn -q clean package -DskipTests`.
-4. Run the **headless CLI** against the target (no web server needed):
+3. Build this calculator if needed: `mvn -q clean package -DskipTests` (produces `core/target/aic-cli.jar`).
+4. Run the **lean headless CLI** against the target (Spring-free, no web server):
    ```
-   java -jar target/abstractness-instability-calculator-1.0-SNAPSHOT.jar --scan="<path>"
+   java -jar core/target/aic-cli.jar --scan="<path>"
    ```
    Add `--fail-on-distance=<d>` if the user passed one, and `--output=<file>` if they want the JSON saved.
 5. Read the JSON envelope from stdout (or the output file) and summarize: packages found, the `summary`
    (well-designed vs. needs-attention, average distance), any `gate` violations, and the process exit code
    (`0` passed / `1` gate violated / `2` scan error).
-6. If the user wants the interactive chart instead, mention they can run the app without `--scan` and open
-   `http://localhost:8081`.
+6. If the user wants the interactive chart instead, mention they can run the web UI
+   (`java -jar web/target/aic-web.jar`) and open `http://localhost:8081`.
 
 If the scan returns no packages, the most likely cause is that the target was not compiled — re-check step 2.

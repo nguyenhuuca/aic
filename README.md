@@ -37,19 +37,22 @@ Dependency Visualization
    cd abstractness-instability-calculator
    ```
 
-3. Build the project:
+3. Build the project (reactor builds both modules):
    ```
-   mvn clean install
+   mvn clean package
    ```
+   This produces two artifacts:
+   - `web/target/aic-web.jar` — the Spring Boot web UI (fat jar)
+   - `core/target/aic-cli.jar` — a lean, Spring-free CLI for CI (~2.5 MB)
 
 ## Usage
 
-1. Run the application:
+1. Run the web application:
    ```
-   java -jar target/abstractness-instability-calculator-1.0-SNAPSHOT.jar
+   java -jar web/target/aic-web.jar
    ```
 
-2. Open a web browser and go to `http://localhost:8080`
+2. Open a web browser and go to `http://localhost:8081`
 
 3. Enter the path to your Java project in the input field
 
@@ -67,15 +70,18 @@ Run the analyzer headless (no web server) to gate a build on architecture qualit
 target project must be **compiled** first (the tool reads `.class` bytecode).
 
 ```
-java -jar target/abstractness-instability-calculator-1.0-SNAPSHOT.jar \
-     --scan=/path/to/project [--fail-on-distance=0.7] [--output=metrics.json]
+java -jar core/target/aic-cli.jar \
+     --scan=/path/to/project [--fail-on-distance=0.7] [--no-cycles] [--output=metrics.json]
 ```
+
+The CLI is a lean, Spring-free jar (~2.5 MB) that starts in well under a second — no web server is
+started.
 
 - Prints the JSON metrics envelope (with a `gate` section) to stdout, or to `--output=<file>`.
 - Exit code: `0` = all gates passed, `1` = a gate was violated, `2` = scan error.
 
-Quality gates are configured under `instability-calculator.gate` in `application.yaml` (each gate is
-independent and can be enabled/disabled):
+The CLI's quality gates default in code (`max-package-distance` @ 0.7 enabled, the rest off) and are
+overridden by flags (`--fail-on-distance`, `--no-cycles`). The available gates:
 
 | Gate | Fails the build when… |
 |------|------------------------|
@@ -95,7 +101,7 @@ Example GitHub Actions step:
 - name: Architecture quality gate
   run: |
     mvn -B -q clean package -DskipTests
-    java -jar target/abstractness-instability-calculator-1.0-SNAPSHOT.jar \
+    java -jar core/target/aic-cli.jar \
          --scan="$GITHUB_WORKSPACE" --fail-on-distance=0.7
 ```
 
@@ -113,7 +119,7 @@ Example GitHub Actions step:
 
 3. Run application
    ```
-   java -jar target/abstractness-instability-calculator*.jar
+   java -jar web/target/aic-web.jar
    ```
 
 ## Understanding the Results
