@@ -571,6 +571,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#complexity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complexity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#reading-the-scatter-plot" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -948,6 +959,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#complexity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complexity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#reading-the-scatter-plot" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1037,6 +1059,15 @@
 <li><strong>Use:</strong> packages close to the Main Sequence are well balanced; high-D packages are refactoring
   candidates.</li>
 </ul>
+<h2 id="complexity">Complexity<a class="headerlink" href="#complexity" title="Permanent link">&para;</a></h2>
+<p>Each package also reports method complexity (from bytecode):</p>
+<ul>
+<li><strong>Max complexity</strong> — the highest cyclomatic complexity among the package's methods (and which method).</li>
+<li><strong>Avg complexity</strong> — average cyclomatic complexity across the package's methods, with the method count.</li>
+</ul>
+<p>Cyclomatic complexity ≈ 1 + decision points (conditional branches + switch cases). The
+<code>max-complexity</code> gate fails the build when any method exceeds a configured threshold — see
+<a href="../cli-and-ci/">CLI &amp; CI Gates</a>.</p>
 <h2 id="reading-the-scatter-plot">Reading the scatter plot<a class="headerlink" href="#reading-the-scatter-plot" title="Permanent link">&para;</a></h2>
 <p>The chart highlights several regions:</p>
 <ul>

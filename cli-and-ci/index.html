@@ -1061,8 +1061,19 @@ project's <code>aic-check.yaml</code>, and finally by these flags.</p>
 <td><code>no-cycles</code></td>
 <td>any circular dependency between packages is detected</td>
 </tr>
+<tr>
+<td><code>max-complexity</code></td>
+<td>any method's cyclomatic complexity exceeds the threshold</td>
+</tr>
+<tr>
+<td><code>banned-apis</code></td>
+<td>any forbidden class/method/package is referenced (with <code>allowedIn</code> exceptions)</td>
+</tr>
 </tbody>
 </table>
+<p>A <strong>dead-code</strong> report (class-level, configured under <code>dead-code</code>) is also available but is
+<strong>report-only</strong> — it lists potentially-unused classes without failing the build. See
+<a href="../configuration/">Project Configuration</a> for the <code>max-complexity</code>, <code>banned-apis</code>, and <code>dead-code</code> schema.</p>
 <h2 id="github-actions-example">GitHub Actions example<a class="headerlink" href="#github-actions-example" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Architecture quality gate</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
