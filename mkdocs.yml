@@ -59,6 +59,7 @@ nav:
       - Understanding the Metrics: metrics.md
       - CLI & CI Gates: cli-and-ci.md
       - Architecture Checks: architecture-checks.md
+      - Project Configuration: configuration.md
       - JSON Export & API: json-export.md
   - Reference:
       - Project Structure: project-structure.md

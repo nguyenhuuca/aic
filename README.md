@@ -159,6 +159,13 @@ All spec sections are optional except `components`. Defaults when omitted:
 
 The result appears under `architecture` in the JSON envelope; any violation makes the process exit `1`.
 
+### Project configuration (`aic-check.yaml`)
+
+Instead of passing flags, a project can carry its own check policy in an `aic-check.yaml` (discovered in
+`src/main/resources/` or the project root) that controls the gates **and** the architecture check.
+Precedence is **code defaults < `aic-check.yaml` < CLI flags**, so CI can run a bare `--scan` and the
+project's own rules apply. See the docs for the full schema.
+
 `--fail-on-distance=<d>` enables and overrides the per-package distance threshold from the command line.
 
 Example GitHub Actions step:

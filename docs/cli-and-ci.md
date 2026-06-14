@@ -32,10 +32,14 @@ java -jar core/target/aic-cli.jar \
 | `1` | a gate or architecture rule was violated |
 | `2` | scan error (bad path, no `@SpringBootApplication`, or an invalid `--arch`) |
 
+!!! tip "Configure once, in the project"
+    Instead of passing flags every run, a project can ship an `aic-check.yaml` that defines its gates
+    and architecture — see [Project Configuration](configuration.md). CI can then run a bare `--scan`.
+
 ## Quality gates
 
-Gate defaults live in code (`max-package-distance` @ 0.7 enabled, the rest off) and are overridden by
-flags.
+Gate defaults live in code (`max-package-distance` @ 0.7 enabled, the rest off), are overridden by a
+project's `aic-check.yaml`, and finally by these flags.
 
 | Gate | Fails the build when… |
 |------|------------------------|

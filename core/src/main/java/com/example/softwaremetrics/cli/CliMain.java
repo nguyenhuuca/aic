@@ -1,9 +1,10 @@
 package com.example.softwaremetrics.cli;
 
 import com.example.softwaremetrics.application.SpringBootPackageScanner;
+import com.example.softwaremetrics.config.CheckConfig;
+import com.example.softwaremetrics.config.CheckConfigLoader;
 import com.example.softwaremetrics.config.Defaults;
 import com.example.softwaremetrics.domain.CycleDetector;
-import com.example.softwaremetrics.domain.GateConfig;
 import com.example.softwaremetrics.domain.GateResult;
 import com.example.softwaremetrics.domain.JavaClassAnalyzer;
 import com.example.softwaremetrics.domain.MetricsExport;
@@ -15,7 +16,6 @@ import com.example.softwaremetrics.domain.ThresholdEvaluator;
 import com.example.softwaremetrics.domain.arch.ArchChecker;
 import com.example.softwaremetrics.domain.arch.ArchResult;
 import com.example.softwaremetrics.domain.arch.ArchSpec;
-import com.example.softwaremetrics.domain.arch.ArchSpecLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.nio.file.Files;
@@ -60,17 +60,21 @@ public final class CliMain {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
+            Path projectPath = Path.of(parsed.scanPath);
+            // Effective config: code defaults < project aic-check.yaml < CLI flags.
+            CheckConfig config = CheckConfigLoader.resolve(projectPath,
+                    new CheckConfigLoader.Overrides(parsed.failOnDistance, parsed.noCycles, parsed.archRef));
+
             Map<String, PackageMetrics> metrics = scanner.scanProject(parsed.scanPath);
             List<List<String>> cycles = cycleDetector.findCycles(metrics);
-            GateConfig gateConfig = resolveGateConfig(parsed);
-            GateResult gateResult = evaluator.evaluate(metrics, cycles, gateConfig);
+            GateResult gateResult = evaluator.evaluate(metrics, cycles, config.gate());
             MetricsExport export = MetricsExport.from(parsed.scanPath, TOOL_VERSION, metrics)
                     .withGate(gateResult)
                     .withCycles(cycles);
 
             ArchResult arch = null;
-            if (parsed.archRef != null) {
-                arch = checkArchitecture(parsed, analyzer, locator);
+            if (config.architecture() != null) {
+                arch = checkArchitecture(projectPath, config.architecture(), analyzer, locator);
                 export = export.withArchitecture(arch);
             }
 
@@ -92,31 +96,14 @@ public final class CliMain {
         }
     }
 
-    private static ArchResult checkArchitecture(Args parsed, JavaClassAnalyzer analyzer, PackageLocator locator) {
-        Path projectPath = Path.of(parsed.scanPath);
+    private static ArchResult checkArchitecture(Path projectPath, ArchSpec spec,
+                                                JavaClassAnalyzer analyzer, PackageLocator locator) {
         String mainPackage = locator.findMainPackage(projectPath);
         if (mainPackage == null || mainPackage.isEmpty()) {
             throw new IllegalArgumentException("No @SpringBootApplication found — cannot check architecture.");
         }
-        ArchSpec spec = ArchSpecLoader.load(parsed.archRef);
         Map<String, Set<String>> classDeps = analyzer.buildClassDependencyGraph(projectPath, mainPackage);
         return new ArchChecker().check(spec, classDeps);
-    }
-
-    private static GateConfig resolveGateConfig(Args parsed) {
-        GateConfig base = Defaults.gateConfig();
-        boolean maxPkgEnabled = base.maxPackageDistanceEnabled();
-        double maxPkg = base.maxPackageDistance();
-        if (parsed.failOnDistance != null) {
-            maxPkgEnabled = true;
-            maxPkg = parsed.failOnDistance;
-        }
-        boolean noCycles = base.noCyclesEnabled() || parsed.noCycles;
-        return new GateConfig(
-                maxPkgEnabled, maxPkg,
-                base.forbiddenZonesEnabled(),
-                base.maxAverageDistanceEnabled(), base.maxAverageDistance(),
-                noCycles);
     }
 
     private static void printSummary(GateResult result) {

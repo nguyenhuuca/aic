@@ -12,6 +12,10 @@ java -jar core/target/aic-cli.jar --scan=<proj> --arch=./my-arch.yaml    # your 
 In the **web UI**, pick a template from the *Architecture* dropdown next to the path field; the result
 shows as a banner (green when compliant, red listing violations).
 
+!!! tip "Or let the project own its rules"
+    A project can enable the architecture check (with a template or an inline spec) in its
+    [`aic-check.yaml`](configuration.md) — then no `--arch` flag or dropdown selection is needed.
+
 ## Built-in templates
 
 | Template | Idea |

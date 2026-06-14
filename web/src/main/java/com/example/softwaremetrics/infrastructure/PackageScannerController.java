@@ -1,6 +1,8 @@
 package com.example.softwaremetrics.infrastructure;
 
 import com.example.softwaremetrics.application.SpringBootPackageScanner;
+import com.example.softwaremetrics.config.CheckConfig;
+import com.example.softwaremetrics.config.CheckConfigLoader;
 import com.example.softwaremetrics.domain.CycleDetector;
 import com.example.softwaremetrics.domain.JavaClassAnalyzer;
 import com.example.softwaremetrics.domain.MetricsExport;
@@ -8,8 +10,6 @@ import com.example.softwaremetrics.domain.PackageLocator;
 import com.example.softwaremetrics.domain.PackageMetrics;
 import com.example.softwaremetrics.domain.arch.ArchChecker;
 import com.example.softwaremetrics.domain.arch.ArchResult;
-import com.example.softwaremetrics.domain.arch.ArchSpec;
-import com.example.softwaremetrics.domain.arch.ArchSpecLoader;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -48,19 +48,23 @@ public class PackageScannerController {
         this.archChecker = archChecker;
     }
 
-    /** Runs the architecture check for the given template against the project, or null if no template. */
+    /**
+     * Runs the architecture check, resolving the spec from the project's {@code aic-check.yaml} or the
+     * selected template (the dropdown overrides the project file). Returns null when no spec applies.
+     */
     private ArchResult checkArchitecture(String path, String arch) {
-        if (arch == null || arch.isBlank()) {
+        Path projectPath = Path.of(path);
+        CheckConfig config = CheckConfigLoader.resolve(projectPath,
+                new CheckConfigLoader.Overrides(null, false, arch));
+        if (config.architecture() == null) {
             return null;
         }
-        Path projectPath = Path.of(path);
         String mainPackage = packageLocator.findMainPackage(projectPath);
         if (mainPackage == null || mainPackage.isEmpty()) {
             return null;
         }
-        ArchSpec spec = ArchSpecLoader.load(arch);
         Map<String, Set<String>> classDeps = javaClassAnalyzer.buildClassDependencyGraph(projectPath, mainPackage);
-        return archChecker.check(spec, classDeps);
+        return archChecker.check(config.architecture(), classDeps);
     }
 
     @GetMapping("/")
