@@ -17,12 +17,12 @@ java -jar web/target/aic-web.jar          # web UI on port 8081
 java -jar core/target/aic-cli.jar --scan=<path>   # headless CLI / CI
 ```
 
-- **`core`** (`aic-core`) — Spring-free analysis engine + CLI. Produces a lean shaded jar `core/target/aic-cli.jar` (~2.5 MB). Deps: ASM, jackson-databind, slf4j.
+- **`core`** (`aic-core`) — Spring-free analysis engine + CLI. Produces two jars: the lean library jar `core/target/aic-core-<version>.jar` (the Maven artifact the `web` module depends on) and a standalone executable `core/target/aic-cli.jar` (~3 MB, shaded). The shade uses `<outputFile>` so the CLI jar is written to a fixed path **without** replacing the library artifact — keeping `slf4j-simple` out of `web`'s classpath. Deps: ASM, jackson-databind, slf4j.
 - **`web`** (`aic-web`) — Spring Boot UI depending on `core`. Fat jar `web/target/aic-web.jar`.
 
 The web app serves on **port 8081** (set in `web/.../application.yaml`; README's 8080 is stale). A Nix flake (`nix develop`) is provided for outdated Java/Maven.
 
-**Headless / CI mode:** `core/target/aic-cli.jar --scan=<path>` runs a one-shot scan with **no Spring and no web server** (entry point `cli.CliMain`, which wires the core POJOs by hand), prints the JSON metrics envelope, evaluates the quality gates, and exits `0` (passed) / `1` (gate violated) / `2` (scan error). The CLI's gate config defaults in code (`config/Defaults`) and is overridden by flags (`--fail-on-distance`, `--no-cycles`); gate logic is `GateConfig` → `ThresholdEvaluator`. `CycleDetector` (Tarjan SCC over the package dependency graph) finds circular dependencies; cycles appear in the JSON envelope (`cycles`) and as a banner in the web UI.
+**Headless / CI mode:** `core/target/aic-cli.jar --scan=<path>` runs a one-shot scan with **no Spring and no web server**. Entry point `cli.CliMain` is a thin shell: it parses args, then delegates the whole pipeline to `application/AnalysisService` (see Architecture), prints the JSON metrics envelope + summaries, and exits `0` (passed) / `1` (gate violated) / `2` (scan error). The CLI's gate config defaults in code (`config/Defaults`) and is overridden by flags (`--fail-on-distance`, `--no-cycles`); gate logic is `GateConfig` → `ThresholdEvaluator`. `CycleDetector` (Tarjan SCC over the package dependency graph) finds circular dependencies; cycles appear in the JSON envelope (`cycles`) and as a banner in the web UI.
 
 **Module granularity (`ModuleResolver`):** a class is assigned to its module by truncating its package — by default the direct sub-package of the main package (depth 1). `analyze.depth` / `analyze.expand` in `aic-check.yaml` make it finer (e.g. split `dto` into `dto.admin`, `dto.webapi`). Modules now emerge from the classes seen (no fixed pre-list), replacing the old `findApplicationModulePackages` + first-match-prefix mapping.
 
@@ -40,14 +40,16 @@ mvn test -Dtest=PackageMetricsCalculatorTest               # single class
 mvn test -Dtest=JavaClassAnalyzerTest#methodName           # single method
 ```
 
-`PackageScannerControllerIT` is a `@SpringBootTest` + MockMvc integration test that builds a synthetic project tree in a `@TempDir`.
+`PackageScannerControllerIT` is a `@SpringBootTest` + MockMvc integration test that builds a synthetic project tree in a `@TempDir` (it emits compiled `.class` fixtures via ASM, since the analyzer reads bytecode, not source). As a `*IT` it runs in the **`verify`** phase via the failsafe plugin, not in `mvn test` — CI runs `mvn -B verify`.
 
 ## Architecture
 
-The flow is `Controller → SpringBootPackageScanner → PackageLocator + PackageMetricsCalculator → JavaClassAnalyzer`, organized in three layers under `com.example.softwaremetrics`. **`domain` and `application` live in the `core` module** (plain POJOs, no Spring); **`infrastructure`, templates, and the Spring wiring live in `web`**. The `web` module's `config/AnalysisConfig` exposes the core POJOs as `@Bean`s and binds `application.yaml` onto them via `@Bean @ConfigurationProperties` (so core stays Spring-free while the web app stays YAML-configurable).
+The single orchestration entry point is **`application/AnalysisService`** (the facade): both `cli.CliMain` and the web `PackageScannerController` just call `analysisService.analyze(AnalysisRequest)` and get back an `AnalysisResult` (the assembled `MetricsExport` envelope + the individual pieces). The service runs the whole pipeline — `CheckConfigLoader.resolve` → `SpringBootPackageScanner` (`PackageLocator` + `PackageMetricsCalculator` → `JavaClassAnalyzer`) → `CycleDetector` → `ThresholdEvaluator` (gates, CLI only) → arch/banned/dead-code checks → envelope. Build it via the full constructor (web wires it as a `@Bean`) or `AnalysisService.create(exclusions)` (hand-wires the object graph for the CLI).
 
-- **infrastructure** (web) — `PackageScannerController`: `GET /` renders `index`, `POST /scan?path=...` returns Thymeleaf fragments `graph :: graph` (success) or `graph :: error` (on `IllegalArgumentException`/`IllegalStateException`). Templates live in `web/src/main/resources/templates/`.
-- **application** — `SpringBootPackageScanner`: orchestrates a scan. Locates the main package, finds module packages, delegates metric calculation. Throws `IllegalArgumentException` when no `@SpringBootApplication` or no sub-packages are found.
+The code is organized in three layers under `com.example.softwaremetrics`. **`domain` and `application` live in the `core` module** (plain POJOs, no Spring); **`infrastructure`, templates, and the Spring wiring live in `web`**. The `web` module's `config/AnalysisConfig` exposes the core POJOs as `@Bean`s (incl. `AnalysisService`) and binds `application.yaml` onto them via `@Bean @ConfigurationProperties` (so core stays Spring-free while the web app stays YAML-configurable).
+
+- **infrastructure** (web) — `PackageScannerController`: depends only on `AnalysisService`. `GET /` renders `index`, `POST /scan?path=...` returns Thymeleaf fragments `graph :: graph` (success) or `graph :: error` (on `IllegalArgumentException`/`IllegalStateException`); `GET /api/metrics` returns the JSON envelope. Templates live in `web/src/main/resources/templates/`.
+- **application** — `AnalysisService` (facade, above) over `SpringBootPackageScanner`, which orchestrates a single scan: locates the main package, resolves modules, delegates metric calculation. Throws `IllegalArgumentException` when no `@SpringBootApplication` or no sub-packages are found. `AnalysisRequest`/`AnalysisResult` are the immutable in/out types.
 - **domain** — the analysis core:
   - `PackageLocator` — finds the main package (file containing `@SpringBootApplication`) and the module packages (sub-packages exactly one level below it).
   - `ProjectPathTraverser` — thin `Files.walk` wrapper for finding `.java` files and directories.

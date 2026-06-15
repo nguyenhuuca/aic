@@ -56,7 +56,6 @@
     </dependencies>
 
     <build>
-        <finalName>aic-cli</finalName>
         <plugins>
             <!-- Package an executable, dependency-bundled CLI jar (no Spring, no web). -->
             <plugin>
@@ -69,6 +68,11 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <!-- Write the runnable CLI to a fixed path WITHOUT replacing the main
+                                 artifact, so downstream modules (web) depend on the lean library jar
+                                 and never inherit the bundled slf4j-simple (which clashes with web's
+                                 Logback). outputFile makes shade ignore finalName/attach/reduced-pom. -->
+                            <outputFile>${project.build.directory}/aic-cli.jar</outputFile>
                             <!-- override (not merge with) spring-boot-parent's managed shade config -->
                             <transformers combine.self="override">
                                 <transformer
