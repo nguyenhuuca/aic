@@ -1,37 +1,26 @@
 package com.example.softwaremetrics.cli;
 
-import com.example.softwaremetrics.application.SpringBootPackageScanner;
-import com.example.softwaremetrics.config.CheckConfig;
+import com.example.softwaremetrics.application.AnalysisRequest;
+import com.example.softwaremetrics.application.AnalysisResult;
+import com.example.softwaremetrics.application.AnalysisService;
 import com.example.softwaremetrics.config.CheckConfigLoader;
 import com.example.softwaremetrics.config.Defaults;
-import com.example.softwaremetrics.domain.ClassInfo;
-import com.example.softwaremetrics.domain.CycleDetector;
 import com.example.softwaremetrics.domain.GateResult;
-import com.example.softwaremetrics.domain.JavaClassAnalyzer;
-import com.example.softwaremetrics.domain.MetricsExport;
-import com.example.softwaremetrics.domain.PackageLocator;
-import com.example.softwaremetrics.domain.PackageMetrics;
-import com.example.softwaremetrics.domain.PackageMetricsCalculator;
-import com.example.softwaremetrics.domain.ProjectPathTraverser;
-import com.example.softwaremetrics.domain.ThresholdEvaluator;
-import com.example.softwaremetrics.domain.arch.ArchChecker;
 import com.example.softwaremetrics.domain.arch.ArchResult;
-import com.example.softwaremetrics.domain.arch.ArchSpec;
-import com.example.softwaremetrics.domain.banned.BannedApiChecker;
-import com.example.softwaremetrics.domain.deadcode.DeadCodeDetector;
 import com.example.softwaremetrics.domain.deadcode.DeadCodeResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Headless / CI entry point — runs a scan with no Spring and no web server. Prints the JSON metrics
  * envelope (incl. gate and cycles) and exits {@code 0} (gates passed) / {@code 1} (gate violated) /
  * {@code 2} (scan error or bad usage).
+ *
+ * <p>Thin shell over {@link AnalysisService}: it only parses args, prints the JSON + summaries and
+ * maps the outcome to an exit code — all orchestration lives in the service.
  *
  * <p>Usage: {@code --scan=<path> [--output=<file>] [--fail-on-distance=<d>] [--no-cycles]}
  */
@@ -55,84 +44,38 @@ public final class CliMain {
             return;
         }
 
-        // Manually wire the analysis object graph (no Spring).
-        JavaClassAnalyzer analyzer = new JavaClassAnalyzer(Defaults.exclusions());
-        PackageLocator locator = new PackageLocator(analyzer, new ProjectPathTraverser());
-        SpringBootPackageScanner scanner = new SpringBootPackageScanner(locator, new PackageMetricsCalculator(analyzer));
-        CycleDetector cycleDetector = new CycleDetector();
-        ThresholdEvaluator evaluator = new ThresholdEvaluator();
+        AnalysisService service = AnalysisService.create(Defaults.exclusions());
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-            Path projectPath = Path.of(parsed.scanPath);
-            // Effective config: code defaults < project aic-check.yaml < CLI flags.
-            CheckConfig config = CheckConfigLoader.resolve(projectPath,
-                    new CheckConfigLoader.Overrides(parsed.failOnDistance, parsed.noCycles, parsed.archRef));
+            AnalysisRequest request = new AnalysisRequest(parsed.scanPath,
+                    new CheckConfigLoader.Overrides(parsed.failOnDistance, parsed.noCycles, parsed.archRef),
+                    TOOL_VERSION, true);
+            AnalysisResult result = service.analyze(request);
 
-            Map<String, PackageMetrics> metrics = scanner.scanProject(parsed.scanPath, config.analyze());
-            List<List<String>> cycles = cycleDetector.findCycles(metrics);
-            GateResult gateResult = evaluator.evaluate(metrics, cycles, config.gate());
-            MetricsExport export = MetricsExport.from(parsed.scanPath, TOOL_VERSION, metrics)
-                    .withGate(gateResult)
-                    .withCycles(cycles);
-
-            ArchResult arch = null;
-            if (config.architecture() != null) {
-                arch = checkArchitecture(projectPath, config.architecture(), analyzer, locator);
-                export = export.withArchitecture(arch);
-            }
-
-            // Banned-API gate + dead-code report (share one project-model pass).
-            List<GateResult.Violation> bannedViolations = List.of();
-            DeadCodeResult deadCode = null;
-            if (!config.bannedApis().isEmpty() || config.deadCodeEnabled()) {
-                String mainPackage = locator.findMainPackage(projectPath);
-                if (mainPackage != null && !mainPackage.isEmpty()) {
-                    List<ClassInfo> model = analyzer.analyzeProject(projectPath, mainPackage);
-                    if (!config.bannedApis().isEmpty()) {
-                        bannedViolations = new BannedApiChecker().check(model, config.bannedApis());
-                        export = export.withBannedApis(bannedViolations);
-                    }
-                    if (config.deadCodeEnabled()) {
-                        deadCode = new DeadCodeDetector().detect(model);
-                        export = export.withDeadCode(deadCode);
-                    }
-                }
-            }
-
-            String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(export);
+            String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(result.export());
             if (parsed.outputFile != null) {
                 Files.writeString(Path.of(parsed.outputFile), json);
                 System.err.println("Metrics written to " + parsed.outputFile);
             } else {
                 System.out.println(json);
             }
-            printSummary(gateResult);
-            printArchSummary(arch);
-            printBannedSummary(bannedViolations);
-            printDeadCodeSummary(deadCode);
+            printSummary(result.gate());
+            printArchSummary(result.architecture());
+            printBannedSummary(result.bannedApiViolations());
+            printDeadCodeSummary(result.deadCode());
 
-            boolean ok = gateResult.passed()
-                    && (arch == null || arch.compliant())
-                    && bannedViolations.isEmpty();
-            System.exit(ok ? 0 : 1);
+            System.exit(result.success() ? 0 : 1);
         } catch (IllegalArgumentException | IllegalStateException e) {
             System.err.println("Scan failed: " + e.getMessage());
             System.exit(2);
         }
     }
 
-    private static ArchResult checkArchitecture(Path projectPath, ArchSpec spec,
-                                                JavaClassAnalyzer analyzer, PackageLocator locator) {
-        String mainPackage = locator.findMainPackage(projectPath);
-        if (mainPackage == null || mainPackage.isEmpty()) {
-            throw new IllegalArgumentException("No @SpringBootApplication found — cannot check architecture.");
-        }
-        Map<String, Set<String>> classDeps = analyzer.buildClassDependencyGraph(projectPath, mainPackage);
-        return new ArchChecker().check(spec, classDeps);
-    }
-
     private static void printSummary(GateResult result) {
+        if (result == null) {
+            return;
+        }
         if (result.passed()) {
             System.err.println("Quality gate PASSED.");
             return;

@@ -3,6 +3,9 @@ package com.example.softwaremetrics.infrastructure;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -126,10 +129,36 @@ public class PackageScannerControllerIT {
         Files.writeString(subPackagePath,
                 """
                         package com.example.subpackage;
-                        
+
                         public class TestClass {
                             public void testMethod() {}
                         }
                         """);
+
+        // The analyzer reads compiled bytecode, not source — emit a matching .class so the scan finds
+        // the module 'com.example.subpackage' (a source-only project yields empty metrics).
+        writeCompiledClass(projectRoot.resolve("target/classes/com/example/subpackage/TestClass.class"),
+                "com.example.subpackage.TestClass");
+    }
+
+    private void writeCompiledClass(Path classFile, String className) throws IOException {
+        ClassWriter cw = new ClassWriter(0);
+        cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, className.replace('.', '/'), null, "java/lang/Object", null);
+        MethodVisitor ctor = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "()V", null, null);
+        ctor.visitCode();
+        ctor.visitVarInsn(Opcodes.ALOAD, 0);
+        ctor.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
+        ctor.visitInsn(Opcodes.RETURN);
+        ctor.visitMaxs(1, 1);
+        ctor.visitEnd();
+        MethodVisitor mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "testMethod", "()V", null, null);
+        mv.visitCode();
+        mv.visitInsn(Opcodes.RETURN);
+        mv.visitMaxs(0, 1);
+        mv.visitEnd();
+        cw.visitEnd();
+
+        Files.createDirectories(classFile.getParent());
+        Files.write(classFile, cw.toByteArray());
     }
 }
