@@ -1,7 +1,8 @@
 package com.example.softwaremetrics.config;
 
-import com.example.softwaremetrics.application.AnalysisService;
-import com.example.softwaremetrics.domain.InstabilityCalculatorProperties;
+import com.example.softwaremetrics.core.application.AnalysisService;
+import com.example.softwaremetrics.core.config.Defaults;
+import com.example.softwaremetrics.core.domain.InstabilityCalculatorProperties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;

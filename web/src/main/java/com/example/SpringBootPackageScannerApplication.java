@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Web application entry point. The headless CLI / CI mode lives in the {@code core} module
- * ({@code com.example.softwaremetrics.cli.CliMain}), so this just starts the web UI.
+ * ({@code com.example.softwaremetrics.core.cli.CliMain}), so this just starts the web UI.
  */
 @SpringBootApplication(scanBasePackages = "com.example")
 public class SpringBootPackageScannerApplication {

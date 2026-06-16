@@ -1,9 +1,9 @@
 package com.example.softwaremetrics.infrastructure;
 
-import com.example.softwaremetrics.application.AnalysisRequest;
-import com.example.softwaremetrics.application.AnalysisResult;
-import com.example.softwaremetrics.application.AnalysisService;
-import com.example.softwaremetrics.config.CheckConfigLoader;
+import com.example.softwaremetrics.core.application.AnalysisRequest;
+import com.example.softwaremetrics.core.application.AnalysisResult;
+import com.example.softwaremetrics.core.application.AnalysisService;
+import com.example.softwaremetrics.core.config.CheckConfigLoader;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;

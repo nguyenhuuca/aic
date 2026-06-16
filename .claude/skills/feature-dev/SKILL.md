@@ -22,7 +22,7 @@ Use plan mode (`EnterPlanMode` / `ExitPlanMode`) when available so the user can 
 
 ## 1. Understand the change & locate the layer
 
-Code is layered under `com.example.softwaremetrics`. Put each change where it belongs:
+Code is layered under `com.example.softwaremetrics` (`web`'s `config`/`infrastructure`) and `com.example.softwaremetrics.core` (`core`'s `domain`/`application`). Put each change where it belongs:
 
 | Kind of change | Layer / file |
 |---|---|

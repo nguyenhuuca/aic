@@ -77,7 +77,7 @@
                             <transformers combine.self="override">
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.example.softwaremetrics.cli.CliMain</mainClass>
+                                    <mainClass>com.example.softwaremetrics.core.cli.CliMain</mainClass>
                                 </transformer>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
