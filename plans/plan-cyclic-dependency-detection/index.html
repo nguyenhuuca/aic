@@ -1891,7 +1891,7 @@
 
 <h1 id="plan-cyclic-dependency-detection">Plan: Cyclic Dependency Detection<a class="headerlink" href="#plan-cyclic-dependency-detection" title="Permanent link">&para;</a></h1>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p><strong>Status:</strong> In Progress (core complete; integration test gap remaining)
+<p><strong>Status:</strong> Complete
 <strong>Author:</strong> nguyenhuuca
 <strong>Date:</strong> 2026-06-17
 <strong>Beads Issue:</strong> N/A (bd not installed; see task list below)
@@ -2025,7 +2025,7 @@ directed edges in JSON) are deferred to future plans.</p>
 </ul>
 <h3 id="phase-4-integration-test-gap-todo">Phase 4: Integration test gap ⬜ TODO<a class="headerlink" href="#phase-4-integration-test-gap-todo" title="Permanent link">&para;</a></h3>
 <ul>
-<li>[ ] <strong>4.1</strong> Add integration test in <code>PackageScannerControllerIT</code> that builds a synthetic project with two packages that mutually depend on each other (A references class in B; B references class in A) using ASM bytecode generation.</li>
+<li>[x] <strong>4.1</strong> Add integration test in <code>PackageScannerControllerIT</code> that builds a synthetic project with two packages that mutually depend on each other (A references class in B; B references class in A) using ASM bytecode generation.</li>
 </ul>
 <p><strong>Test outline:</strong>
   <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nd">@Test</span>
@@ -2048,7 +2048,7 @@ directed edges in JSON) are deferred to future plans.</p>
     appears in response HTML)</p>
 </li>
 <li>
-<p>[ ] <strong>4.2</strong> Run <code>mvn -B verify</code> to confirm <code>PackageScannerControllerIT</code> passes with the new test.</p>
+<p>[x] <strong>4.2</strong> Run <code>mvn -B verify</code> to confirm <code>PackageScannerControllerIT</code> passes with the new test.</p>
 </li>
 </ul>
 <h2 id="files-to-modify">Files to Modify<a class="headerlink" href="#files-to-modify" title="Permanent link">&para;</a></h2>
@@ -2193,12 +2193,12 @@ directed edges in JSON) are deferred to future plans.</p>
 <tr>
 <td><strong>Cyclic synthetic project (A↔B)</strong></td>
 <td><code>$.cycles</code> has 1 group containing both packages; Thymeleaf model <code>cycles</code> non-empty</td>
-<td>⬜ TODO</td>
+<td>✅ Done</td>
 </tr>
 <tr>
 <td><code>--no-cycles</code> gate via JSON (CLI mode)</td>
 <td>Gate violation for <code>circularDependency</code> in <code>$.gate.violations</code></td>
-<td>⬜ TODO (lower priority)</td>
+<td>⬜ Deferred</td>
 </tr>
 </tbody>
 </table>
@@ -2287,6 +2287,10 @@ question about D3 cycle-edge highlighting is therefore blocked until D3 is added
 <tr>
 <td>2026-06-17</td>
 <td>Core algorithm, gate, JSON envelope, web banner, and unit tests confirmed complete. Integration test gap identified via codebase exploration. Plan created.</td>
+</tr>
+<tr>
+<td>2026-06-17</td>
+<td>Added <code>scanReportsCyclicDependencies</code> IT test + <code>createCyclicProjectStructure</code> / <code>writeCyclicClass</code> helpers. All 8 IT tests pass (<code>mvn -B verify</code>). Feature complete.</td>
 </tr>
 </tbody>
 </table>
