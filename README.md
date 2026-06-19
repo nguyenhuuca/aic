@@ -8,11 +8,11 @@ It follows the principles of Spring Modulith by analyzing the [application modul
 
 A [Nix Flake](#nix-flake) is provided to help build on systems with outdated java and maven installations.
 
-![screenshot](https://github.com/user-attachments/assets/a496037d-62b2-42b5-809f-0eec2f63018a)
+![screenshot](docs/images/screenshot.png)
 
 Dependency Visualization
 
-![dependency_visualization_recording](https://github.com/user-attachments/assets/83ed8bae-5b0d-4b8c-a356-820e29c3ebad)
+![dependency_visualization](docs/images/dependency-visualization.png)
 
 ## Features
 
