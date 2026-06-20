@@ -13,10 +13,6 @@
       
       
       
-        <link rel="prev" href="../cli-and-ci/">
-      
-      
-        <link rel="next" href="../configuration/">
       
       
         
@@ -27,7 +23,7 @@
     
     
       
-        <title>Architecture Checks - Abstractness & Instability Calculator</title>
+        <title>Architecture Assessment — aic Current System - Abstractness & Instability Calculator</title>
       
     
     
@@ -78,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#architecture-checks" class="md-skip">
+        <a href="#architecture-assessment-aic-current-system" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Architecture Checks
+              Architecture Assessment — aic Current System
             
           </span>
         </div>
@@ -261,12 +257,10 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../metrics/" class="md-tabs__link">
           
   
@@ -438,10 +432,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -459,22 +451,19 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -492,7 +481,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -563,37 +552,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture Checks
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../architecture-checks/" class="md-nav__link">
         
   
   
@@ -609,87 +571,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#built-in-templates" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Built-in templates
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#spec-schema" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Spec schema
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Spec schema">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#rules" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Rules
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#defaults-when-omitted" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Defaults when omitted
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#output" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Output
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1211,10 +1092,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#built-in-templates" class="md-nav__link">
+  <a href="#metadata" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Built-in templates
+        Metadata
       
     </span>
   </a>
@@ -1222,22 +1103,55 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#spec-schema" class="md-nav__link">
+  <a href="#1-architecture-map-as-built" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Spec schema
+        1. Architecture Map (as-built)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Spec schema">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-golden-path-compliance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Golden-Path Compliance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-systemic-strengths-preserve-these" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Systemic Strengths (preserve these)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-systemic-findings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Systemic Findings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Systemic Findings">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#rules" class="md-nav__link">
+  <a href="#finding-a-javaclassanalyzer-straddles-two-concerns-and-forces-a-second-traversal-severity-high-structural" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Rules
+        Finding A — JavaClassAnalyzer straddles two concerns and forces a second traversal · Severity: High (structural)
       
     </span>
   </a>
@@ -1245,10 +1159,43 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#defaults-when-omitted" class="md-nav__link">
+  <a href="#finding-b-check-extensibility-is-closed-ocp-severity-medium-structural" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Defaults when omitted
+        Finding B — Check extensibility is closed (OCP) · Severity: Medium (structural)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#finding-c-web-trust-boundary-arbitrary-host-path-scan-severity-medium-high-securityresilience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding C — Web trust boundary: arbitrary host-path scan · Severity: Medium-High (security/resilience)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#finding-d-resolver-chain-rebuilt-per-call-field-misnamed-severity-low" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding D — Resolver chain rebuilt per call; field misnamed · Severity: Low
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#finding-e-checkconfigloader-is-a-static-utility-mixing-io-mapping-merging-severity-low" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding E — CheckConfigLoader is a static utility mixing I/O + mapping + merging · Severity: Low
       
     </span>
   </a>
@@ -1261,10 +1208,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#output" class="md-nav__link">
+  <a href="#5-trade-off-analysis-finding-a-remediation-the-one-decision-worth-making-now" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Output
+        5. Trade-off Analysis — Finding A remediation (the one decision worth making now)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-prioritized-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Prioritized Recommendations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-open-question-for-the-owner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Open Question for the Owner
       
     </span>
   </a>
@@ -1288,7 +1257,7 @@
 
 
   
-    <a href="https://github.com/nguyenhuuca/aic/edit/main/docs/architecture-checks.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/nguyenhuuca/aic/edit/main/docs/architecture-assessment-2026-06-20.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1296,109 +1265,272 @@
   
 
 
-<h1 id="architecture-checks">Architecture Checks<a class="headerlink" href="#architecture-checks" title="Permanent link">&para;</a></h1>
-<p>Enforce architecture rules from a YAML spec — a project that breaks them fails the build. A
-<strong>component</strong> is a layer (controller/service/repository) or a functional module, matched by
-fully-qualified class-name regex, so one mechanism covers both granularities.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>java<span class="w"> </span>-jar<span class="w"> </span>core/target/aic-cli.jar<span class="w"> </span>--scan<span class="o">=</span>&lt;proj&gt;<span class="w"> </span>--arch<span class="o">=</span>layered<span class="w">          </span><span class="c1"># built-in template</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>java<span class="w"> </span>-jar<span class="w"> </span>core/target/aic-cli.jar<span class="w"> </span>--scan<span class="o">=</span>&lt;proj&gt;<span class="w"> </span>--arch<span class="o">=</span>./my-arch.yaml<span class="w">    </span><span class="c1"># your own rules</span>
+<h1 id="architecture-assessment-aic-current-system">Architecture Assessment — <code>aic</code> Current System<a class="headerlink" href="#architecture-assessment-aic-current-system" title="Permanent link">&para;</a></h1>
+<h2 id="metadata">Metadata<a class="headerlink" href="#metadata" title="Permanent link">&para;</a></h2>
+<p><strong>Status:</strong> Review · <strong>Date:</strong> 2026-06-20 · <strong>Reviewer:</strong> Principal Architect (Opus 4.8) · <strong>Tags:</strong> architecture, system-review
+<strong>Scope:</strong> Whole system (<code>core</code> + <code>web</code>) as of commit <code>165d1e1</code>
+<strong>Tech Strategy:</strong> Assessed against <code>.claude/rules/tech-strategy.md</code> Golden Paths</p>
+<blockquote>
+<p>Design assessment only — no implementation code. Findings reference <code>file:line</code>. Companion to the
+code-level audits in <code>CODE_HEALTH_Opus.md</code>; this document covers <strong>systemic / structural</strong> concerns,
+not local code smells.</p>
+</blockquote>
+<hr />
+<h2 id="1-architecture-map-as-built">1. Architecture Map (as-built)<a class="headerlink" href="#1-architecture-map-as-built" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                          ┌──────────────────────── web (Spring Boot) ────────────────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  HTTP ── GET / ─────────▶│ PackageScannerController ─┐                                        │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>       ── POST /scan ─────▶│   (infrastructure)        │   AnalysisConfig (@Configuration)      │
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>       ── GET /api/metrics▶│                           │     ├─ @Bean InstabilityCalcProps      │
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                          │                            ▼     │     (binds application.yaml)      │
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                          │              AnalysisService.create(props) ◀── @Bean                │
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                          └────────────────────────────┼──────────────────────────────────────┘
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                                                        │ (depends on core only; never reverse)
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  CLI ── --scan=path ────▶ CliMain.run ────────────────┤
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>       (no Spring)                                      ▼
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>                          ┌──────────────────── core (Spring-free) ───────────────────────────┐
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>                          │  application/AnalysisService  ── the single orchestration facade   │
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>                          │      1. CheckConfigLoader.resolve  (defaults &lt; file &lt; CLI flags)   │
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>                          │      2. ProjectModelBuilder.build  ── ONE ASM pass → ProjectModel  │
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>                          │      3. resolveRootPackage (Chain: Explicit→SpringBoot→CommonPrefix)│
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>                          │      4. PackageMetricsCalculator.calculateMetrics(model, resolver)  │
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>                          │      5. CycleDetector → ThresholdEvaluator (gates, CLI only)        │
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>                          │      6. runChecks: ArchChecker / BannedApiChecker / DeadCodeDetector│
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>                          │      7. assemble MetricsExport envelope                             │
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>                          └────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
-<p>In the <strong>web UI</strong>, pick a template from the <em>Architecture</em> dropdown next to the path field; the result
-shows as a banner (green when compliant, red listing violations).</p>
-<div class="admonition tip">
-<p class="admonition-title">Or let the project own its rules</p>
-<p>A project can enable the architecture check (with a template or an inline spec) in its
-<a href="../configuration/"><code>aic-check.yaml</code></a> — then no <code>--arch</code> flag or dropdown selection is needed.</p>
-</div>
-<h2 id="built-in-templates">Built-in templates<a class="headerlink" href="#built-in-templates" title="Permanent link">&para;</a></h2>
+<p><strong>Module boundary:</strong> <code>web</code> → <code>core</code>, never the reverse. <code>core</code> has zero Spring imports. ✅
+<strong>Entry symmetry:</strong> CLI and web both build an <code>AnalysisRequest</code> and call <code>AnalysisService.analyze()</code>.
+The only behavioral difference is <code>evaluateGates</code> (CLI <code>true</code>, web <code>false</code>). ✅</p>
+<hr />
+<h2 id="2-golden-path-compliance">2. Golden-Path Compliance<a class="headerlink" href="#2-golden-path-compliance" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Template</th>
-<th>Idea</th>
+<th>Golden Path rule</th>
+<th>Status</th>
+<th>Evidence</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>layered</code></td>
-<td>Web → Service → Repository → Domain</td>
+<td><code>core</code> Spring-free; <code>web</code> depends on <code>core</code></td>
+<td>✅</td>
+<td><code>AnalysisService</code>, all <code>domain/*</code> are plain POJOs; Spring only in <code>web</code></td>
 </tr>
 <tr>
-<td><code>hexagonal</code></td>
-<td>Ports &amp; Adapters: Adapter → Application → Domain</td>
+<td>Bytecode-only analysis (ASM, never source) for metrics</td>
+<td>⚠️ <strong>mostly</strong></td>
+<td>Metrics path is pure bytecode (<code>ProjectModelBuilder</code>). <strong>But</strong> root-package resolution re-reads <code>.java</code> <strong>source</strong> (<code>JavaClassAnalyzer.containsSpringBootApplication</code>) — a second, source-based traversal. See Finding A.</td>
 </tr>
 <tr>
-<td><code>onion</code></td>
-<td>Onion / Clean: Infrastructure → Application → Domain</td>
+<td>Constructor injection, no field <code>@Autowired</code></td>
+<td>⚠️</td>
+<td>One exception: <code>PackageScannerController.java:25</code> uses field <code>@Value</code> for <code>toolVersion</code></td>
+</tr>
+<tr>
+<td>Single orchestration facade (<code>AnalysisService</code>)</td>
+<td>✅</td>
+<td>Both entry points delegate to it; <code>analyze()</code> is the sole pipeline</td>
+</tr>
+<tr>
+<td>Single ASM pass</td>
+<td>⚠️</td>
+<td>True for bytecode (<code>build()</code> called once, <code>AnalysisService.java:97</code>). Root-package step adds an independent filesystem walk.</td>
+</tr>
+<tr>
+<td><code>MetricsExport</code> additive-only contract</td>
+<td>✅</td>
+<td>Immutable record + <code>with*</code> withers (<code>MetricsExport.java:36-58</code>)</td>
+</tr>
+<tr>
+<td>No persistence; stateless per scan</td>
+<td>✅</td>
+<td>By design (tech strategy)</td>
 </tr>
 </tbody>
 </table>
-<h2 id="spec-schema">Spec schema<a class="headerlink" href="#spec-schema" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Layered</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">components</span><span class="p">:</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Web</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">matches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;.*\.controller(\..*)?$&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;.*\.web(\..*)?$&#39;</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">matches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;.*\.service(\..*)?$&#39;</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Repository</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nt">matches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;.*\.repository(\..*)?$&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;.*\.repo(\..*)?$&#39;</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Domain</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="nt">matches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;.*\.domain(\..*)?$&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;.*\.model(\..*)?$&#39;</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="nt">access</span><span class="p">:</span><span class="w">                       </span><span class="c1"># allow-list: a component may depend ONLY on those listed</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="nt">Web</span><span class="p">:</span><span class="w">        </span><span class="p p-Indicator">[</span><span class="nv">Service</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">Domain</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="nt">Service</span><span class="p">:</span><span class="w">    </span><span class="p p-Indicator">[</span><span class="nv">Repository</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">Domain</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span><span class="nt">Repository</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">Domain</span><span class="p p-Indicator">]</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">  </span><span class="nt">Domain</span><span class="p">:</span><span class="w">     </span><span class="p p-Indicator">[]</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="nt">forbidden</span><span class="p">:</span><span class="w">                    </span><span class="c1"># explicit deny edges (independent of access)</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">from</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Domain</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="nt">to</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Web</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="nt">naming</span><span class="p">:</span><span class="w">                       </span><span class="c1"># required class simple-name regex per component</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">  </span><span class="nt">Repository</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;.*Repository$&#39;</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="nt">options</span><span class="p">:</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">  </span><span class="nt">ignoreUnmatched</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">  </span><span class="nt">forbidCycles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</code></pre></div>
-<h3 id="rules">Rules<a class="headerlink" href="#rules" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>access</strong> — an allow-list per component; depending on anything not listed is a violation.</li>
-<li><strong>forbidden</strong> — explicit denied edges, independent of <code>access</code>.</li>
-<li><strong>naming</strong> — class simple names in a component must match the regex.</li>
-<li><strong>forbidCycles</strong> — no dependency cycle between components.</li>
-</ul>
-<h3 id="defaults-when-omitted">Defaults when omitted<a class="headerlink" href="#defaults-when-omitted" title="Permanent link">&para;</a></h3>
+<p><strong>Verdict:</strong> Strong adherence. The one substantive divergence is the dual filesystem traversal in
+root-package resolution (Finding A).</p>
+<hr />
+<h2 id="3-systemic-strengths-preserve-these">3. Systemic Strengths (preserve these)<a class="headerlink" href="#3-systemic-strengths-preserve-these" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Single-model derivation.</strong> Every check (metrics, cycles, gates, arch, banned, dead-code) reads
+   one <code>ProjectModel</code> built by one ASM pass (<code>AnalysisService.runChecks</code>). This is the core
+   architectural asset — additive checks cost ~zero extra I/O.</li>
+<li><strong>Clean facade.</strong> <code>AnalysisService.analyze()</code> is the only public seam; CLI/web are thin shells
+   (<code>CliMain.java:58</code>, <code>PackageScannerController.java:47</code>). Easy to add a third consumer.</li>
+<li><strong>Config layering is centralized.</strong> <code>CheckConfigLoader.resolve</code> owns the defaults &lt; file &lt; flags
+   precedence in one place (<code>CheckConfigLoader.java:50-82</code>).</li>
+<li><strong>Root-package resolution is an SPI.</strong> <code>ChainedRootPackageResolver</code> over an ordered list decouples
+   the strategy from Spring Boot, enabling plain-Java scans.</li>
+<li><strong>Immutable, self-describing export.</strong> <code>MetricsExport</code> is the single API contract for both JSON
+   endpoint and CLI stdout.</li>
+</ol>
+<hr />
+<h2 id="4-systemic-findings">4. Systemic Findings<a class="headerlink" href="#4-systemic-findings" title="Permanent link">&para;</a></h2>
+<h3 id="finding-a-javaclassanalyzer-straddles-two-concerns-and-forces-a-second-traversal-severity-high-structural">Finding A — <code>JavaClassAnalyzer</code> straddles two concerns and forces a second traversal · <strong>Severity: High (structural)</strong><a class="headerlink" href="#finding-a-javaclassanalyzer-straddles-two-concerns-and-forces-a-second-traversal-severity-high-structural" title="Permanent link">&para;</a></h3>
+<p><code>JavaClassAnalyzer</code> now does two unrelated things:
+- <strong>Source scanning</strong> for <code>@SpringBootApplication</code> (<code>JavaClassAnalyzer.java:38-72</code>), used by
+  <code>SpringBootRootPackageResolver</code> — reads <code>.java</code> files.
+- <strong>Bytecode delegation</strong> (<code>analyzeClasses</code>, <code>buildClassDependencyGraph</code>, <code>analyzeProject</code>,
+  <code>:75-100</code>) — now dead in production / test-only (confirmed in <code>CODE_HEALTH_Opus.md</code> DC2-DC4).</p>
+<p>Two consequences:
+1. <code>AnalysisService.create()</code> (<code>:77-80</code>) instantiates <strong>two</strong> <code>ProjectModelBuilder</code>s — one as
+   <code>builder</code>, one hidden inside the <code>JavaClassAnalyzer</code> passed to <code>PackageMetricsCalculator</code>. The
+   second is never used on the live path.
+2. The system already knows entry points from bytecode: <code>ProjectModelBuilder.ENTRY_ANNOTATION_MARKERS</code>
+   includes <code>"SpringBootApplication"</code> and sets <code>ClassDetail.entryPoint</code> (<code>ProjectModelBuilder.java:50-52,138</code>).
+   Yet root-package resolution <strong>ignores that</strong> and re-reads source text instead — a redundant
+   filesystem pass that also explains the Golden-Path "bytecode-only" divergence.</p>
+<p><strong>Architectural opportunity:</strong> derive the Spring-Boot root package from the already-built
+<code>ProjectModel</code> (the entry-point class's package) instead of scanning source. That would let
+<code>SpringBootRootPackageResolver</code>, <code>JavaClassAnalyzer</code>, and <code>ProjectPathTraverser</code> be retired entirely,
+collapse to a genuine single traversal, and restore full Golden-Path compliance. See the trade-off
+matrix in §5.</p>
+<h3 id="finding-b-check-extensibility-is-closed-ocp-severity-medium-structural">Finding B — Check extensibility is closed (OCP) · <strong>Severity: Medium (structural)</strong><a class="headerlink" href="#finding-b-check-extensibility-is-closed-ocp-severity-medium-structural" title="Permanent link">&para;</a></h3>
+<p>The three optional checks have no shared abstraction. Adding a fourth requires editing four places:
+<code>AnalysisService.runChecks</code> (<code>:155-172</code>), the private <code>Checks</code> record (<code>:148</code>), the envelope-assembly
+block in <code>analyze()</code> (<code>:124-132</code>), and <code>MetricsExport</code>. Each check independently re-derives its view
+(<code>model.classDependencyGraph</code> / <code>model.classInfos</code>). This is acceptable at N=3 but will not scale
+cleanly. A <code>CheckRunner</code> SPI (<code>CheckResult run(ProjectModel, String mainPackage, CheckConfig)</code>) plus a
+registered <code>List&lt;CheckRunner&gt;</code> would make checks additive without touching the orchestrator.</p>
+<h3 id="finding-c-web-trust-boundary-arbitrary-host-path-scan-severity-medium-high-securityresilience">Finding C — Web trust boundary: arbitrary host-path scan · <strong>Severity: Medium-High (security/resilience)</strong><a class="headerlink" href="#finding-c-web-trust-boundary-arbitrary-host-path-scan-severity-medium-high-securityresilience" title="Permanent link">&para;</a></h3>
+<p><code>POST /scan?path=…</code> and <code>GET /api/metrics?path=…</code> (<code>PackageScannerController.java:45,67</code>) take a
+filesystem path from the client and walk it (<code>Files.walk</code> in <code>ProjectModelBuilder.build</code>). For the
+intended <strong>localhost single-user dev tool</strong> this is fine and is consistent with the "no persistence,
+path-per-request" design. <strong>But</strong> there is no path allow-listing, no sandboxing, and the scan is
+<strong>synchronous and unbounded</strong> — a large or deep tree blocks an HTTP worker thread for the whole ASM
+walk, and the entire <code>ProjectModel</code> is held in memory with no class-count ceiling. If this app is ever
+exposed beyond localhost, this becomes a path-disclosure + DoS surface. Recommend: document the
+localhost-only trust assumption explicitly, and (if multi-user is ever a goal) add a configurable
+root-path allow-list, a scan timeout, and a class-count/size cap.</p>
+<h3 id="finding-d-resolver-chain-rebuilt-per-call-field-misnamed-severity-low">Finding D — Resolver chain rebuilt per call; field misnamed · <strong>Severity: Low</strong><a class="headerlink" href="#finding-d-resolver-chain-rebuilt-per-call-field-misnamed-severity-low" title="Permanent link">&para;</a></h3>
+<p><code>resolveRootPackage</code> (<code>AnalysisService.java:139-145</code>) constructs a fresh <code>ChainedRootPackageResolver</code>
+on every <code>analyze()</code> call, and the held field is named <code>springBootResolver</code> though it is only one link
+of the chain (<code>:51</code>). Minor: the chain is cheap to build, but the naming misleads and the
+re-construction obscures that only the Spring-Boot link is injected. Resolves naturally if Finding A
+is taken (the Spring-Boot link disappears).</p>
+<h3 id="finding-e-checkconfigloader-is-a-static-utility-mixing-io-mapping-merging-severity-low">Finding E — <code>CheckConfigLoader</code> is a static utility mixing I/O + mapping + merging · <strong>Severity: Low</strong><a class="headerlink" href="#finding-e-checkconfigloader-is-a-static-utility-mixing-io-mapping-merging-severity-low" title="Permanent link">&para;</a></h3>
+<p><code>CheckConfigLoader</code> (<code>:31-217</code>) is <code>final</code> with a private ctor and all-static methods. It discovers
+the file, parses YAML, maps raw maps to domain objects, and applies the three-layer merge — four
+responsibilities, untestable in isolation, and the empty-file path NPEs (<code>CODE_HEALTH_Opus.md</code> C1).
+Not urgent, but if config grows (more sections), splitting parse from merge and making it an injectable
+collaborator would improve testability and align with the DI golden path.</p>
+<hr />
+<h2 id="5-trade-off-analysis-finding-a-remediation-the-one-decision-worth-making-now">5. Trade-off Analysis — Finding A remediation (the one decision worth making now)<a class="headerlink" href="#5-trade-off-analysis-finding-a-remediation-the-one-decision-worth-making-now" title="Permanent link">&para;</a></h2>
+<p><strong>Decision:</strong> How to resolve the Spring-Boot root package.</p>
 <table>
 <thead>
 <tr>
-<th>Spec field</th>
-<th>Default</th>
+<th>Option</th>
+<th style="text-align: center;">Single traversal</th>
+<th style="text-align: center;">Golden-path (bytecode-only)</th>
+<th>Code to retire</th>
+<th>Risk</th>
+<th>Effort</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>access</code></td>
-<td>no allow-list (subject only to <code>forbidden</code>)</td>
-</tr>
-<tr>
-<td><code>forbidden</code></td>
+<td><strong>1. Keep source-scan (status quo)</strong></td>
+<td style="text-align: center;">❌ (2 walks)</td>
+<td style="text-align: center;">❌ diverges</td>
+<td>none</td>
+<td>none</td>
 <td>none</td>
 </tr>
 <tr>
-<td><code>naming</code></td>
+<td><strong>2. Derive root pkg from <code>ProjectModel</code> entry-point class</strong></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅ restored</td>
+<td><code>JavaClassAnalyzer</code>, <code>ProjectPathTraverser</code>, <code>SpringBootRootPackageResolver</code>→thin</td>
+<td>Low–Med: entry-point detection is annotation-marker based, slightly looser than the source regex (which strips comments/strings); must confirm no false-positive entry classes change the picked package</td>
+<td>Med</td>
+</tr>
+<tr>
+<td><strong>3. Hybrid — bytecode first, source fallback</strong></td>
+<td style="text-align: center;">⚠️ (1 walk usually)</td>
+<td style="text-align: center;">⚠️</td>
 <td>none</td>
-</tr>
-<tr>
-<td><code>options.ignoreUnmatched</code></td>
-<td><code>true</code> (classes matching no component are skipped). Set to <code>false</code> to flag any first-party class that matches no component as an <code>unmatched</code> violation.</td>
-</tr>
-<tr>
-<td><code>options.forbidCycles</code></td>
-<td><code>false</code></td>
+<td>Low</td>
+<td>Med</td>
 </tr>
 </tbody>
 </table>
-<h2 id="output">Output<a class="headerlink" href="#output" title="Permanent link">&para;</a></h2>
-<p>The result appears under <code>architecture</code> in the <a href="../json-export/">JSON envelope</a> (<code>specName</code>,
-<code>compliant</code>, <code>violations[]</code>), and any violation makes the CLI exit <code>1</code>.</p>
+<p><strong>Recommendation: Option 2</strong>, gated on a verification step. The <code>ProjectModel</code> already carries
+<code>entryPoint</code> per class; the Spring-Boot resolver can pick the package of the entry-point class (or the
+common prefix of entry-point classes when several exist), eliminating the source pass. <strong>Risk to
+retire first:</strong> <code>ENTRY_ANNOTATION_MARKERS</code> is broad (<code>Controller</code>, <code>Service</code>, <code>Component</code>, …), so
+"entry point" ≠ "the <code>@SpringBootApplication</code> class". The resolver must specifically key on the
+<code>main</code>-method flag (<code>ProjectModelBuilder.isMainMethod</code>, already captured as <code>hasMain</code>) and/or the
+<code>SpringBootApplication</code> marker, <strong>not</strong> the generic <code>entryPoint</code> boolean. This is the single design
+detail to nail down before implementing. Recommend a focused ADR + a characterization test on a
+multi-entry-point fixture before retiring <code>JavaClassAnalyzer</code>.</p>
+<hr />
+<h2 id="6-prioritized-recommendations">6. Prioritized Recommendations<a class="headerlink" href="#6-prioritized-recommendations" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Recommendation</th>
+<th>Type</th>
+<th>Severity</th>
+<th>Depends on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1</td>
+<td>Fix <code>CheckConfigLoader</code> empty-file NPE (C1)</td>
+<td>Bug</td>
+<td>High</td>
+<td>—</td>
+</tr>
+<tr>
+<td>R2</td>
+<td>Document the <strong>localhost-only trust boundary</strong> for <code>/scan</code> in <code>docs/web-ui.md</code>; decide whether multi-user is a goal</td>
+<td>Design/Security</td>
+<td>Med-High</td>
+<td>—</td>
+</tr>
+<tr>
+<td>R3</td>
+<td>ADR: resolve Spring-Boot root package from <code>ProjectModel</code> (Option 2) → retire <code>JavaClassAnalyzer</code> + <code>ProjectPathTraverser</code>, restore single-traversal &amp; bytecode-only golden path</td>
+<td>Structural</td>
+<td>High</td>
+<td>characterization test</td>
+</tr>
+<tr>
+<td>R4</td>
+<td>Introduce <code>CheckRunner</code> SPI to make checks additive (OCP)</td>
+<td>Structural</td>
+<td>Med</td>
+<td>—</td>
+</tr>
+<tr>
+<td>R5</td>
+<td>If multi-user ever in scope: scan timeout + class-count cap + root-path allow-list</td>
+<td>Resilience</td>
+<td>Med</td>
+<td>R2 decision</td>
+</tr>
+<tr>
+<td>R6</td>
+<td>Split <code>CheckConfigLoader</code> parse vs merge; consider injectable</td>
+<td>Maintainability</td>
+<td>Low</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>R1, R3, R4 are the structural backbone. R2 is a <strong>decision the owner must make</strong> (trust model), and it
+gates R5 — there is no point hardening the path API if the tool is deliberately localhost-only.</p>
+<hr />
+<h2 id="7-open-question-for-the-owner">7. Open Question for the Owner<a class="headerlink" href="#7-open-question-for-the-owner" title="Permanent link">&para;</a></h2>
+<p><strong>Is the web app intended to ever run beyond localhost / single-user?</strong> The current path-per-request
+design is correct and safe for a personal dev tool, but unsafe as a shared service. The answer
+determines whether Findings C/R5 are "document the assumption" (localhost) or "must fix before deploy"
+(multi-user). I did not assume — it changes the whole resilience posture.</p>
 
 
 
