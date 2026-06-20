@@ -32,63 +32,85 @@ public record MetricsExport(
     public record Summary(int wellDesigned, int needsAttention, double averageDistance) {
     }
 
-    /** Returns a copy of this envelope with the gate evaluation attached. */
-    public MetricsExport withGate(GateResult gate) {
-        return new MetricsExport(generatedAt, projectPath, toolVersion, packageCount, summary, packages, gate, cycles, architecture, bannedApiViolations, deadCode);
-    }
-
-    /** Returns a copy of this envelope with the detected circular-dependency groups attached. */
-    public MetricsExport withCycles(List<List<String>> cycles) {
-        return new MetricsExport(generatedAt, projectPath, toolVersion, packageCount, summary, packages, gate, cycles, architecture, bannedApiViolations, deadCode);
-    }
-
-    /** Returns a copy of this envelope with the architecture-conformance result attached. */
-    public MetricsExport withArchitecture(ArchResult architecture) {
-        return new MetricsExport(generatedAt, projectPath, toolVersion, packageCount, summary, packages, gate, cycles, architecture, bannedApiViolations, deadCode);
-    }
-
-    /** Returns a copy of this envelope with banned-API violations attached. */
-    public MetricsExport withBannedApis(List<GateResult.Violation> bannedApiViolations) {
-        return new MetricsExport(generatedAt, projectPath, toolVersion, packageCount, summary, packages, gate, cycles, architecture, bannedApiViolations, deadCode);
-    }
-
-    /** Returns a copy of this envelope with the (report-only) dead-code result attached. */
-    public MetricsExport withDeadCode(DeadCodeResult deadCode) {
-        return new MetricsExport(generatedAt, projectPath, toolVersion, packageCount, summary, packages, gate, cycles, architecture, bannedApiViolations, deadCode);
+    /**
+     * Starts assembling an envelope for one scan. Metadata and the summary are computed from
+     * {@code metrics} at {@link Builder#build()} time; optional report sections are attached fluently.
+     */
+    public static Builder builder(String projectPath, String toolVersion,
+                                  Map<String, PackageMetrics> metrics) {
+        return new Builder(projectPath, toolVersion, metrics);
     }
 
     /**
-     * Builds an export envelope from a scan result. A package is considered "well designed"
-     * when its distance from the main sequence is {@code <= 0.5} (matching the UI's color
-     * threshold); the rest "need attention".
+     * Collects the optional report sections and assembles the {@link MetricsExport} exactly once. Any
+     * section left unset stays {@code null} and is therefore omitted from the JSON
+     * ({@code @JsonInclude(NON_NULL)}). This is the single place the full record is constructed.
      */
-    public static MetricsExport from(String projectPath, String toolVersion,
-                                     Map<String, PackageMetrics> metrics) {
-        int wellDesigned = 0;
-        double totalDistance = 0.0;
-        for (PackageMetrics m : metrics.values()) {
-            totalDistance += m.getDistance();
-            if (m.getDistance() <= 0.5) {
-                wellDesigned++;
-            }
-        }
-        int packageCount = metrics.size();
-        int needsAttention = packageCount - wellDesigned;
-        double averageDistance = (packageCount == 0)
-                ? 0.0
-                : Math.round((totalDistance / packageCount) * 100.0) / 100.0;
+    public static final class Builder {
 
-        return new MetricsExport(
-                Instant.now().toString(),
-                projectPath,
-                toolVersion,
-                packageCount,
-                new Summary(wellDesigned, needsAttention, averageDistance),
-                metrics,
-                null,
-                null,
-                null,
-                null,
-                null);
+        private final String projectPath;
+        private final String toolVersion;
+        private final Map<String, PackageMetrics> packages;
+        private GateResult gate;
+        private List<List<String>> cycles;
+        private ArchResult architecture;
+        private List<GateResult.Violation> bannedApiViolations;
+        private DeadCodeResult deadCode;
+
+        private Builder(String projectPath, String toolVersion, Map<String, PackageMetrics> metrics) {
+            this.projectPath = projectPath;
+            this.toolVersion = toolVersion;
+            this.packages = metrics;
+        }
+
+        public Builder gate(GateResult gate) {
+            this.gate = gate;
+            return this;
+        }
+
+        public Builder cycles(List<List<String>> cycles) {
+            this.cycles = cycles;
+            return this;
+        }
+
+        public Builder architecture(ArchResult architecture) {
+            this.architecture = architecture;
+            return this;
+        }
+
+        public Builder bannedApis(List<GateResult.Violation> bannedApiViolations) {
+            this.bannedApiViolations = bannedApiViolations;
+            return this;
+        }
+
+        public Builder deadCode(DeadCodeResult deadCode) {
+            this.deadCode = deadCode;
+            return this;
+        }
+
+        /**
+         * Assembles the envelope. A package counts as "well designed" when its distance from the main
+         * sequence is {@code <= 0.5} (matching the UI's color threshold); the rest "need attention".
+         */
+        public MetricsExport build() {
+            int wellDesigned = 0;
+            double totalDistance = 0.0;
+            for (PackageMetrics m : packages.values()) {
+                totalDistance += m.getDistance();
+                if (m.getDistance() <= 0.5) {
+                    wellDesigned++;
+                }
+            }
+            int packageCount = packages.size();
+            int needsAttention = packageCount - wellDesigned;
+            double averageDistance = (packageCount == 0)
+                    ? 0.0
+                    : Math.round((totalDistance / packageCount) * 100.0) / 100.0;
+
+            return new MetricsExport(
+                    Instant.now().toString(), projectPath, toolVersion, packageCount,
+                    new Summary(wellDesigned, needsAttention, averageDistance), packages,
+                    gate, cycles, architecture, bannedApiViolations, deadCode);
+        }
     }
 }

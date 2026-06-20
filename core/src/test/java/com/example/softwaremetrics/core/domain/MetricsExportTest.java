@@ -26,7 +26,7 @@ class MetricsExportTest {
         metrics.put("b", pkg("b", 0.50)); // well designed (boundary)
         metrics.put("c", pkg("c", 0.90)); // needs attention
 
-        MetricsExport export = MetricsExport.from("/some/project", "1.0-TEST", metrics);
+        MetricsExport export = MetricsExport.builder("/some/project", "1.0-TEST", metrics).build();
 
         assertThat(export.projectPath()).isEqualTo("/some/project");
         assertThat(export.toolVersion()).isEqualTo("1.0-TEST");
@@ -43,7 +43,7 @@ class MetricsExportTest {
 
     @Test
     void handlesEmptyMetrics() {
-        MetricsExport export = MetricsExport.from("/empty", "1.0-TEST", Map.of());
+        MetricsExport export = MetricsExport.builder("/empty", "1.0-TEST", Map.of()).build();
 
         assertThat(export.packageCount()).isZero();
         assertThat(export.summary().wellDesigned()).isZero();
@@ -52,68 +52,38 @@ class MetricsExportTest {
     }
 
     @Test
-    void gateIsNullByDefaultAndAttachedByWithGate() {
-        MetricsExport export = MetricsExport.from("/p", "1.0-TEST", Map.of());
-        assertThat(export.gate()).isNull();
+    void optionalSectionsAreNullWhenLeftUnset() {
+        MetricsExport export = MetricsExport.builder("/p", "1.0-TEST", Map.of()).build();
 
+        assertThat(export.gate()).isNull();
+        assertThat(export.cycles()).isNull();
+        assertThat(export.architecture()).isNull();
+        assertThat(export.bannedApiViolations()).isNull();
+        assertThat(export.deadCode()).isNull();
+    }
+
+    @Test
+    void builderAttachesEachOptionalSection() {
         GateResult gate = new GateResult(false, List.of(
                 new GateResult.Violation("maxPackageDistance", "a", 0.8, 0.7, "msg")));
-        MetricsExport withGate = export.withGate(gate);
-
-        assertThat(withGate.gate()).isSameAs(gate);
-        assertThat(withGate.packageCount()).isEqualTo(export.packageCount());
-        assertThat(export.gate()).isNull(); // original unchanged
-    }
-
-    @Test
-    void cyclesAreNullByDefaultAndAttachedByWithCycles() {
-        MetricsExport export = MetricsExport.from("/p", "1.0-TEST", Map.of());
-        assertThat(export.cycles()).isNull();
-
         List<List<String>> cycles = List.of(List.of("a", "b"));
-        MetricsExport withCycles = export.withCycles(cycles);
-
-        assertThat(withCycles.cycles()).isSameAs(cycles);
-        assertThat(export.cycles()).isNull(); // original unchanged
-    }
-
-    @Test
-    void bannedApisAreNullByDefaultAndAttachedByWithBannedApis() {
-        MetricsExport export = MetricsExport.from("/p", "1.0-TEST", Map.of());
-        assertThat(export.bannedApiViolations()).isNull();
-
-        List<GateResult.Violation> violations = List.of(
-                new GateResult.Violation("bannedApi", "com.example.Foo", 1.0, 0.0, "uses banned API"));
-        MetricsExport withBanned = export.withBannedApis(violations);
-
-        assertThat(withBanned.bannedApiViolations()).isSameAs(violations);
-        assertThat(withBanned.packageCount()).isEqualTo(export.packageCount());
-        assertThat(export.bannedApiViolations()).isNull(); // original unchanged
-    }
-
-    @Test
-    void architectureIsNullByDefaultAndAttachedByWithArchitecture() {
-        MetricsExport export = MetricsExport.from("/p", "1.0-TEST", Map.of());
-        assertThat(export.architecture()).isNull();
-
         ArchResult arch = new ArchResult("layered", true, List.of());
-        MetricsExport withArch = export.withArchitecture(arch);
-
-        assertThat(withArch.architecture()).isSameAs(arch);
-        assertThat(withArch.packageCount()).isEqualTo(export.packageCount());
-        assertThat(export.architecture()).isNull(); // original unchanged
-    }
-
-    @Test
-    void deadCodeIsNullByDefaultAndAttachedByWithDeadCode() {
-        MetricsExport export = MetricsExport.from("/p", "1.0-TEST", Map.of());
-        assertThat(export.deadCode()).isNull();
-
+        List<GateResult.Violation> banned = List.of(
+                new GateResult.Violation("bannedApi", "com.example.Foo", 1.0, 0.0, "uses banned API"));
         DeadCodeResult deadCode = new DeadCodeResult(List.of("com.example.Unused"));
-        MetricsExport withDeadCode = export.withDeadCode(deadCode);
 
-        assertThat(withDeadCode.deadCode()).isSameAs(deadCode);
-        assertThat(withDeadCode.packageCount()).isEqualTo(export.packageCount());
-        assertThat(export.deadCode()).isNull(); // original unchanged
+        MetricsExport export = MetricsExport.builder("/p", "1.0-TEST", Map.of())
+                .gate(gate)
+                .cycles(cycles)
+                .architecture(arch)
+                .bannedApis(banned)
+                .deadCode(deadCode)
+                .build();
+
+        assertThat(export.gate()).isSameAs(gate);
+        assertThat(export.cycles()).isSameAs(cycles);
+        assertThat(export.architecture()).isSameAs(arch);
+        assertThat(export.bannedApiViolations()).isSameAs(banned);
+        assertThat(export.deadCode()).isSameAs(deadCode);
     }
 }

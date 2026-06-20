@@ -116,20 +116,14 @@ public class AnalysisService {
 
         Checks checks = runChecks(model, mainPackage, config);
 
-        MetricsExport export = MetricsExport.from(request.projectPath(), request.toolVersion(), metrics)
-                .withCycles(cycles);
-        if (gate != null) {
-            export = export.withGate(gate);
-        }
-        if (checks.architecture() != null) {
-            export = export.withArchitecture(checks.architecture());
-        }
-        if (!config.bannedApis().isEmpty()) {
-            export = export.withBannedApis(checks.bannedApis());
-        }
-        if (checks.deadCode() != null) {
-            export = export.withDeadCode(checks.deadCode());
-        }
+        MetricsExport export = MetricsExport.builder(request.projectPath(), request.toolVersion(), metrics)
+                .cycles(cycles)
+                .gate(gate)
+                .architecture(checks.architecture())
+                // null (not the empty list) when no banned-API rules are configured, so the JSON omits it
+                .bannedApis(config.bannedApis().isEmpty() ? null : checks.bannedApis())
+                .deadCode(checks.deadCode())
+                .build();
 
         return new AnalysisResult(export, metrics, cycles, gate,
                 checks.architecture(), checks.bannedApis(), checks.deadCode());
